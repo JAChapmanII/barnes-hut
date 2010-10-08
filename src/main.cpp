@@ -25,9 +25,6 @@ using std::cin;
 #include <string>
 using std::string;
 
-#include <fstream>
-using std::ifstream;
-
 #include "particle_system.hpp"
 
 int main( int argc, char** argv )
@@ -48,16 +45,9 @@ int main( int argc, char** argv )
 	{
 		fileName = (string)(argv[argc - 1]);
 	}
-	cout << "Selected file: " << fileName << '\n';
+	cout << "Selected file: " << fileName << "\n\n";
 
-	ifstream particleDescriptor( fileName.c_str() );
-	if( particleDescriptor.bad() || !particleDescriptor.good() )
-	{
-		cerr << "Your file is bad\n";
-		return -1;
-	}
-
-	ParticleSystem mPS;
+	ParticleSystem mPS( fileName );
 	cout << mPS << '\n';
 
 	return 0;
