@@ -28,6 +28,8 @@ using std::string;
 #include <fstream>
 using std::ifstream;
 
+#include "particle_system.hpp"
+
 int main( int argc, char** argv )
 {
 	cout << "Arguments:\n";
@@ -54,6 +56,9 @@ int main( int argc, char** argv )
 		cerr << "Your file is bad\n";
 		return -1;
 	}
+
+	ParticleSystem mPS;
+	cout << mPS << '\n';
 
 	return 0;
 }
