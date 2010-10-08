@@ -1,4 +1,19 @@
 This is a brief implementation of the Barnes-Hut algorithm, as it would need to
 be implmented if I were in Analysis of Algorithms. Meant to give me experience
 for when I try to do something similar (unless this works out to be what I was
-thinking the fast multipole method was) in Universum Meum
+thinking the fast multipole method was) in Universum Meum.
+
+Compile:
+	make
+
+Run:
+	./bin/barnes-hut [filename]
+	If you do not specify a file containing the initial particle descriptions,
+	this program will prompt you to spceify the file on stdin.
+
+Warning:
+	I haven't done much file IO, so don't run this on something you don't want to
+	turn into a radioactive sheep-cheese.
+
+License:
+	GPL3, see COPYING
