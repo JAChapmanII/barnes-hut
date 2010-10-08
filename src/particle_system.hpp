@@ -23,19 +23,69 @@
 #include <string>
 #include <ostream>
 
+/**
+ * Utility class used for loading the descriptions of particles out of a file
+ * and into memory.
+ */
 class ParticleSystem
 {
-	friend std::ostream& operator<<( std::ostream& out,
-		const ParticleSystem& toPrint );
-
 	public:
+		/**
+		 * Construct a ParticleSystem without any particles in it.
+		 */
 		ParticleSystem();
+
+		/**
+		 * Construct a ParticleSystem and load particles from a file.
+		 * @param fileName : filename to load from
+		 */
 		ParticleSystem( std::string fileName );
 
+		/**
+		 * Deconstructor that deallocates all memory used by this.
+		 */
+		~ParticleSystem();
+
+		/**
+		 * Load a file into this system, trashing existing particles.
+		 * @param fileName : filename to load from
+		 */
 		void load( std::string fileName );
 
+		/**
+		 * Clears all memory allocated for this.
+		 */
+		void clear();
+
+		/**
+		 * Returns the size in particles of this system.
+		 * @return : size of this system
+		 */
+		unsigned int getSize() const;
+
+		/**
+		 * Returns a float[3] representing a particle.
+		 * @param indici : indice of particle to return
+		 * @return : float[3] representing mParticles[indice]
+		 */
+		float* getParticle( unsigned int indice ) const;
+
+		/**
+		* Friend function used to print the internals of this to an ostream.
+		* @param out : output stream
+		* @param toPrint : the ParticleSystem that should be printed
+		*/
+		friend std::ostream& operator<<( std::ostream& out,
+			const ParticleSystem& toPrint );
+
 	private:
+		/// The number of particles in this system.
+		unsigned int mSize;
+		/// A Nx3 matrix representing mass and position.
 		float** mParticles;
+
+		ParticleSystem( const ParticleSystem& right );
+		ParticleSystem& operator=( const ParticleSystem& right );
 };
 
 #endif // PARTICLE_SYSTEM_HPP
