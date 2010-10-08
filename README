@@ -1,0 +1,4 @@
+This is a brief implementation of the Barnes-Hut algorithm, as it would need to
+be implmented if I were in Analysis of Algorithms. Meant to give me experience
+for when I try to do something similar (unless this is the fast multipole method
+in Universum Meum
