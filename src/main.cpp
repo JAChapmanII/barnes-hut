@@ -30,6 +30,7 @@ using std::string;
 
 int main( int argc, char** argv )
 {
+	// Print args, get fileName and print it {{{
 	cout << "Arguments:\n";
 	for( int i = 0; i < argc; i++ )
 	{
@@ -47,6 +48,7 @@ int main( int argc, char** argv )
 		fileName = (string)(argv[argc - 1]);
 	}
 	cout << "Selected file: " << fileName << "\n\n";
+	// }}}
 
 	ParticleSystem mPS( fileName );
 
