@@ -65,7 +65,9 @@ void Quadtree::add(Particle* node)
 		this->makeChildren();
 
 		this->mChildren[ this->getQuadrant( node ) ]->add( node );
+		this->mChildren[ this->getQuadrant( node ) ]->recalculateMe();
 		this->mChildren[ this->getQuadrant( this->me ) ]->add( this->me );
+		this->mChildren[ this->getQuadrant( this->me ) ]->recalculateMe();
 
 		this->me = new Particle( 0, 0, 0 );
 		this->recalculateMe();
@@ -74,6 +76,7 @@ void Quadtree::add(Particle* node)
 	}
 
 	this->mChildren[ this->getQuadrant( node ) ]->add( node );
+	this->mChildren[ this->getQuadrant( node ) ]->recalculateMe();
 	this->recalculateMe();
 } //}}}
 
@@ -151,8 +154,6 @@ void Quadtree::recalculateMe()
 { //{{{
 	if( !this->isParent )
 		return;
-	for( unsigned int i = 0; i < 4; i++ )
-		this->mChildren[ i ]->recalculateMe();
 
 	this->me->x = 0; this->me->y = 0; this->me->m = 0;
 	for( unsigned int i = 0; i < 4; i++ )
