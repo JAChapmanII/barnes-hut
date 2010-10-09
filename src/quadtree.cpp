@@ -26,6 +26,8 @@ using std::cerr;
 #include <algorithm>
 using std::swap;
 
+#include <cmath>
+
 Quadtree::Quadtree(float iL, float iR, float iT, float iB, Particle* iMe) :
 	left( iL ), //{{{
 	right( iR ),
@@ -100,6 +102,45 @@ void Quadtree::clear()
 	{
 		delete this->mChildren[ i ];
 		this->mChildren[ i ] = NULL;
+	}
+} //}}}
+
+void Quadtree::update( Particle* p )
+{ //{{{
+	if(( this->me == NULL ) || ( p == NULL ))
+		return;
+
+	// G = 6.6726 x 10-11N-m2/kg2
+	static const float GRAVITY = 0.000000000066726;
+
+	float dx = this->me->x - p->x;
+	float dy = this->me->y - p->y;
+	float d2 = dx * dx + dy * dy;
+
+	if( this->numChildren == 0 )
+	{
+		float gm = GRAVITY * p->m * this->me->m;
+		p->ax += dx * gm / d2;
+		p->ay += dy * gm / d2;
+		return;
+	}
+
+	static const float TAU = 0.5;
+	float d = sqrt( d2 );
+	if( ((this->right - this->left) / d) < TAU )
+	{
+		this->mChildren[ 0 ]->update( p );
+		this->mChildren[ 1 ]->update( p );
+		this->mChildren[ 2 ]->update( p );
+		this->mChildren[ 3 ]->update( p );
+		return;
+	}
+	else
+	{
+		float gm = GRAVITY * p->m * this->me->m;
+		p->ax += dx * gm / d2;
+		p->ay += dy * gm / d2;
+		return;
 	}
 } //}}}
 

@@ -56,6 +56,11 @@ class Quadtree
 		void clear();
 
 		/**
+		 * Updates a particle's acceleration by using the Barnes-Hut algorithm
+		 */
+		void update( Particle* p );
+
+		/**
 		 * Return the point this Quadtree represents.
 		 * @return : point representing average of all nodes in this
 		 */
