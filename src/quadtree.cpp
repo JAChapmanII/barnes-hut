@@ -69,16 +69,12 @@ void Quadtree::add(Particle* node)
 
 		this->me = new Particle( 0, 0, 0 );
 		this->recalculateMe();
-		if( this->me->m == 0 )
-			cerr << "Zero mass in this tree\n";
 		this->isParent = true;
 		return;
 	}
 
 	this->mChildren[ this->getQuadrant( node ) ]->add( node );
 	this->recalculateMe();
-	if( this->me->m == 0 )
-		cerr << "Zero mass in this tree\n";
 } //}}}
 
 void Quadtree::add(Quadtree* tree)
@@ -109,7 +105,8 @@ void Quadtree::update( Particle* p )
 	// G = 6.6726 x 10-11N-m2/kg2
 	//static const long double GRAVITY = 0.000000000066726;
 	static const long double GRAVITY = 1;
-	static const long double TAU = 0.5;
+	//static const long double TAU = 0.5;
+	static const long double TAU = 0.0;
 
 	long double dx = this->me->x - p->x;
 	long double dy = this->me->y - p->y;
@@ -124,14 +121,12 @@ void Quadtree::update( Particle* p )
 		long double gm = GRAVITY * p->m * this->me->m;
 		p->ax += dx * gm / d3;
 		p->ay += dy * gm / d3;
-		cerr << *p << "\n";
 		return;
 	}
 
-	if(( this->me->m == 0 ) || ( ((this->right - this->left) / d) > TAU ) ||
+	if(( this->me->m == 0 ) || ( ((this->right - this->left) / d) >= TAU ) ||
 		( this->getQuadrant( p ) != -1 ))
 	{
-		cerr << "Looking deeper\n";
 		this->mChildren[ 0 ]->update( p );
 		this->mChildren[ 1 ]->update( p );
 		this->mChildren[ 2 ]->update( p );
@@ -140,8 +135,6 @@ void Quadtree::update( Particle* p )
 	}
 	else
 	{
-		if( this->me->m == 0 )
-			return;
 		long double gm = GRAVITY * p->m * this->me->m;
 		p->ax += dx * gm / d3;
 		p->ay += dy * gm / d3;
@@ -171,7 +164,6 @@ void Quadtree::recalculateMe()
 	if( this->me->m == 0 )
 		return;
 
-	long double cumM = 0;
 	Particle* tChild = NULL;
 	for( unsigned int i = 0; i < 4; i++ )
 	{
