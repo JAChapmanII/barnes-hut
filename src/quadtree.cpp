@@ -107,28 +107,32 @@ void Quadtree::clear()
 
 void Quadtree::update( Particle* p )
 { //{{{
-	if(( this->me == NULL ) || ( p == NULL ))
+	if(( this->me == NULL ) || ( p == NULL ) || ( this->me == p ))
 		return;
 
 	// G = 6.6726 x 10-11N-m2/kg2
-	static const long double GRAVITY = 0.000000000066726;
+	//static const long double GRAVITY = 0.000000000066726;
+	static const long double GRAVITY = 1;
+	static const long double TAU = 0.5;
 
 	long double dx = this->me->x - p->x;
 	long double dy = this->me->y - p->y;
 	long double d2 = dx * dx + dy * dy;
+	long double d = sqrt( d2 );
+	long double d3 = d * d2;
 
 	if( this->numChildren == 0 )
 	{
 		long double gm = GRAVITY * p->m * this->me->m;
-		p->ax += dx * gm / d2;
-		p->ay += dy * gm / d2;
+		p->ax += dx * gm / d3;
+		p->ay += dy * gm / d3;
+		cerr << *p << "\n";
 		return;
 	}
 
-	static const long double TAU = 0.5;
-	long double d = sqrt( d2 );
-	if( ((this->right - this->left) / d) < TAU )
+	if( ((this->right - this->left) / d) > TAU )
 	{
+		cerr << "Less than tau\n";
 		this->mChildren[ 0 ]->update( p );
 		this->mChildren[ 1 ]->update( p );
 		this->mChildren[ 2 ]->update( p );
@@ -137,9 +141,11 @@ void Quadtree::update( Particle* p )
 	}
 	else
 	{
+		cerr << "Larger than tau (" << *(this->me) << ")\n";
+		cerr << "  " << (this->right - this->left) << "\n";
 		long double gm = GRAVITY * p->m * this->me->m;
-		p->ax += dx * gm / d2;
-		p->ay += dy * gm / d2;
+		p->ax += dx * gm / d3;
+		p->ay += dy * gm / d3;
 		return;
 	}
 } //}}}
