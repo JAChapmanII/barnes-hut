@@ -30,13 +30,21 @@ using std::ifstream;
 
 ParticleSystem::ParticleSystem() :
 	mSize( 0 ), //{{{
-	mParticles( NULL )
+	mParticles( NULL ),
+	minXP( NULL ),
+	maxXP( NULL ),
+	minYP( NULL ),
+	maxYP( NULL )
 {
 } //}}}
 
 ParticleSystem::ParticleSystem( string fileName ) :
 	mSize( 0 ), //{{{
-	mParticles( NULL )
+	mParticles( NULL ),
+	minXP( NULL ),
+	maxXP( NULL ),
+	minYP( NULL ),
+	maxYP( NULL )
 {
 	this->load( fileName );
 } //}}}
@@ -51,7 +59,7 @@ void ParticleSystem::load( string fileName )
 	ifstream file( fileName.c_str() );
 	if( !file.good() )
 	{
-		std::cerr << "ParticleSystem was passed bad file\n";
+		cerr << "ParticleSystem was passed bad file\n";
 		return;
 	}
 
@@ -83,6 +91,15 @@ void ParticleSystem::load( string fileName )
 			this->clear();
 			return;
 		}
+
+		if((this->minXP == NULL) || ( this->mParticles[ l ]->x < this->minXP->x ))
+			this->minXP = this->mParticles[ l ];
+		if((this->maxXP == NULL) || ( this->mParticles[ l ]->x > this->maxXP->x ))
+			this->maxXP = this->mParticles[ l ];
+		if((this->minYP == NULL) || ( this->mParticles[ l ]->y < this->minYP->y ))
+			this->minYP = this->mParticles[ l ];
+		if((this->maxYP == NULL) || ( this->mParticles[ l ]->y > this->maxYP->y ))
+			this->maxYP = this->mParticles[ l ];
 	}
 
 	file.close();
@@ -96,6 +113,10 @@ void ParticleSystem::clear()
 	}
 	delete[] this->mParticles;
 	this->mParticles = NULL;
+	this->minXP = NULL;
+	this->maxXP = NULL;
+	this->minYP = NULL;
+	this->maxYP = NULL;
 	this->mSize = 0;
 } //}}}
 
@@ -123,5 +144,25 @@ ostream& operator<<( ostream& out, const ParticleSystem& toPrint )
 			out << "< " << p->x << ", " << p->y << " > : " << p->m << "\n";
 	}
 	out << "<-- ParticleSystem -->\n";
+} //}}}
+
+float ParticleSystem::getLeft() const
+{ //{{{
+	return this->minXP->x;
+} //}}}
+
+float ParticleSystem::getRight() const
+{ //{{{
+	return this->maxXP->x;
+} //}}}
+
+float ParticleSystem::getBottom() const
+{ //{{{
+	return this->minYP->y;
+} //}}}
+
+float ParticleSystem::getTop() const
+{ //{{{
+	return this->maxYP->y;
 } //}}}
 

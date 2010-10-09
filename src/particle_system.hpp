@@ -80,11 +80,40 @@ class ParticleSystem
 		friend std::ostream& operator<<( std::ostream& out,
 			const ParticleSystem& toPrint );
 
+		/**
+		 * Return the lowest x value of any particle.
+		 * @return : leftmost particle's x
+		 */
+		float getLeft() const;
+
+		/**
+		 * Return the highest x value of any particle.
+		 * @return : rightmost particle's x
+		 */
+		float getRight() const;
+
+		/**
+		 * Return the lowest y value of any particle.
+		 * @return : bottom-most particle's y
+		 */
+		float getBottom() const;
+
+		/**
+		 * Return the highest x valu of any particle.
+		 * @return : top-most particle's y
+		 */
+		float getTop() const;
+
 	private:
 		/// The number of particles in this system.
 		unsigned int mSize;
 		/// A Nx3 matrix representing mass and position.
 		Particle** mParticles;
+
+		Particle* minXP;
+		Particle* maxXP;
+		Particle* minYP;
+		Particle* maxYP;
 
 		ParticleSystem( const ParticleSystem& right );
 		ParticleSystem& operator=( const ParticleSystem& right );
