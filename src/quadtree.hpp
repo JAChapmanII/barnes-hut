@@ -67,6 +67,11 @@ class Quadtree
 		Particle* getMe();
 
 		/**
+		 * Recursively re-calculate a new me
+		 */
+		void recalculateMe();
+
+		/**
 		 * Return the quadrant a node shoud be point into in this tree.
 		 * @param node : node to find quadrant of
 		 * @return : quadrant where node should go
@@ -105,7 +110,7 @@ class Quadtree
 
 		long double left, right;
 		long double top, bottom;
-		unsigned int numChildren;
+		bool isParent;
 		Particle* me;
 		Quadtree** mChildren;
 };

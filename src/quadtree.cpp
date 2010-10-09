@@ -33,7 +33,7 @@ Quadtree::Quadtree(long double iL, long double iR, long double iT, long double i
 	right( iR ),
 	top( iT ),
 	bottom( iB ),
-	numChildren( 0 ),
+	isParent( false ),
 	me( iMe ),
 	mChildren( NULL )
 {
@@ -60,33 +60,25 @@ void Quadtree::add(Particle* node)
 		return;
 	}
 
-	if( this->numChildren == 0 )
+	if( !this->isParent )
 	{
 		this->makeChildren();
 
 		this->mChildren[ this->getQuadrant( node ) ]->add( node );
 		this->mChildren[ this->getQuadrant( this->me ) ]->add( this->me );
 
-		long double x, y, m;
-		m = ( this->me->m ) + ( node->m );
-		x = (this->me->x * ( this->me->m ) + node->x * ( node->m ))/m;
-		y = (this->me->y * ( this->me->m ) + node->y * ( node->m ))/m;
-		this->me = new Particle( x, y, m );
-	if( this->me->m == 0 )
-		cerr << "Zero mass in this tree\n";
-		this->numChildren = 2;
+		this->me = new Particle( 0, 0, 0 );
+		this->recalculateMe();
+		if( this->me->m == 0 )
+			cerr << "Zero mass in this tree\n";
+		this->isParent = true;
 		return;
 	}
 
 	this->mChildren[ this->getQuadrant( node ) ]->add( node );
-	this->me->x = (this->me->x * ( this->me->m ) + node->x * ( node->m ))
-		/ (( this->me->m ) + ( node->m ));
-	this->me->y = (this->me->y * ( this->me->m ) + node->y * ( node->m ))
-		/ (( this->me->m ) + ( node->m ));
-	this->me->m += node->m;
+	this->recalculateMe();
 	if( this->me->m == 0 )
 		cerr << "Zero mass in this tree\n";
-	this->numChildren++;
 } //}}}
 
 void Quadtree::add(Quadtree* tree)
@@ -100,7 +92,7 @@ void Quadtree::clear()
 	delete this->me;
 	this->me = NULL;
 
-	if( this->numChildren == 0 )
+	if( !this->isParent )
 		return;
 	for( unsigned int i = 0; i < 4; ++i )
 	{
@@ -125,7 +117,7 @@ void Quadtree::update( Particle* p )
 	long double d = sqrt( d2 );
 	long double d3 = d * d2;
 
-	if( this->numChildren == 0 )
+	if( !this->isParent )
 	{
 		if( this->me->m == 0 )
 			return;
@@ -161,6 +153,38 @@ Particle* Quadtree::getMe()
 	return this->me;
 } //}}}
 
+void Quadtree::recalculateMe()
+{ //{{{
+	if( !this->isParent )
+		return;
+	for( unsigned int i = 0; i < 4; i++ )
+		this->mChildren[ i ]->recalculateMe();
+
+	this->me->x = 0; this->me->y = 0; this->me->m = 0;
+	for( unsigned int i = 0; i < 4; i++ )
+	{
+		if( this->mChildren[ i ]->getMe() != NULL )
+			this->me->m += this->mChildren[ i ]->getMe()->m;
+	}
+
+	if( this->me->m == 0 )
+		return;
+
+	long double cumM = 0;
+	Particle* tChild = NULL;
+	for( unsigned int i = 0; i < 4; i++ )
+	{
+		tChild = this->mChildren[ i ]->getMe();
+		if( tChild != NULL )
+		{
+			this->me->x += tChild->x * tChild->m;
+			this->me->y += tChild->y * tChild->m;
+		}
+	}
+	this->me->x /= this->me->m;
+	this->me->y /= this->me->m;
+} //}}}
+
 unsigned int Quadtree::getQuadrant( Particle* node ) const
 { //{{{
 	if( node == NULL )
@@ -191,7 +215,7 @@ void Quadtree::makeChildren()
 	if( this->me == NULL )
 		return;
 
-	if( this->numChildren != 0 )
+	if( this->isParent )
 	{
 		for( unsigned int i = 0; i < 4; ++i )
 		{
