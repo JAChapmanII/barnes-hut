@@ -38,6 +38,7 @@ int main( int argc, char** argv )
 	}
 
 	string fileName("");
+	string outputName("");
 	if( argc < 2 )
 	{
 		cout << "Please input the initial particle descriptor file name: ";
@@ -47,7 +48,8 @@ int main( int argc, char** argv )
 	{
 		fileName = (string)(argv[argc - 1]);
 	}
-	cout << "Selected file: " << fileName << "\n\n";
+	outputName = fileName.substr( 0, fileName.find(".txt") ) + "_output.txt";
+	cout << "Selected file: " << fileName << "(output to: " << outputName << ")\n\n";
 	// }}}
 
 	ParticleSystem mPS( fileName );
@@ -71,8 +73,21 @@ int main( int argc, char** argv )
 	{
 		mQT.add( mPS.getParticle( i ) );
 	}
-
 	cout << "Yay! We didn't crash\n";
+
+	cout << "Runnnig Barnes-Hut on all particles\n";
+	for( unsigned int i = 0; i < mPS.getSize(); i++ )
+	{
+		mQT.update( mPS.getParticle( i ) );
+	}
+
+	cout << "Outputting results\n";
+	cout << mPS << '\n';
+
+	cout << "Saving results\n";
+	mPS.save( outputName );
+
+	cout << "Quiting\n";
 
 	return 0;
 }
