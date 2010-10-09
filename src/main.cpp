@@ -64,8 +64,24 @@ int main( int argc, char** argv )
 		<< mPS.getBottom() << ", " << mPS.getTop() << "]\n";
 
 	cout << "Putting all particles into Quadtree, let's see if we SIGSEGV\n";
-	Quadtree mQT( mPS.getLeft() - 1.0, mPS.getRight() + 1.0,
-			mPS.getBottom() - 1.0, mPS.getTop() + 1.0, NULL );
+	long double l = 0, r = 0, b = 0, t = 0;
+	long double w = mPS.getRight() - mPS.getLeft();
+	long double h = mPS.getTop() - mPS.getBottom();
+	if( w > h )
+	{
+		l = mPS.getLeft() - 1.0;
+		r = mPS.getRight() + 1.0;
+		b = mPS.getBottom() - 1.0 - (w - h)/2.0;
+		t = mPS.getTop() + 1.0 + (w - h)/2.0;
+	}
+	else
+	{
+		b = mPS.getBottom() - 1.0;
+		t = mPS.getTop() + 1.0;
+		l = mPS.getLeft() - 1.0 - (h - w)/2.0;
+		r = mPS.getRight() + 1.0 + (h - w)/2.0;
+	}
+	Quadtree mQT( l, r, b, t, NULL );
 	cout << "[" << mQT.getLeft() << ", " << mQT.getRight() << "] ["
 		<< mQT.getBottom() << ", " << mQT.getTop() << "]\n";
 
