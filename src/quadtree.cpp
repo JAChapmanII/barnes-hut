@@ -66,20 +66,20 @@ void Quadtree::add(Particle* node)
 		this->mChildren[ this->getQuadrant( this->me ) ]->add( this->me );
 
 		float x, y, m;
-		x = (this->me->x + node->x)/2.0;
-		y = (this->me->y + node->y)/2.0;
-		m = (this->me->m + node->m)/2.0;
+		m = this->me->m + node->m;
+		x = (this->me->x * this->me->m + node->x * node->m)/m;
+		y = (this->me->y * this->me->m + node->y * node->m)/m;
 		this->me = new Particle( x, y, m );
+		this->numChildren = 2;
 		return;
 	}
 
 	this->mChildren[ this->getQuadrant( node ) ]->add( node );
-	this->me->x = (this->me->x * (float)this->numChildren + node->x)
-		/ ((float)this->numChildren + 1.0);
-	this->me->y = (this->me->y * (float)this->numChildren + node->y)
-		/ ((float)this->numChildren + 1.0);
-	this->me->m = (this->me->m * (float)this->numChildren + node->m)
-		/ ((float)this->numChildren + 1.0);
+	this->me->x = (this->me->x * this->me->m + node->x * node->m)
+		/ (this->me->m + node->m);
+	this->me->y = (this->me->y * this->me->m + node->y * node->m)
+		/ (this->me->m + node->m);
+	this->me->m += node->m;
 	this->numChildren++;
 } //}}}
 
