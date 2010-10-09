@@ -25,8 +25,14 @@ using std::ostream;
 #include <iostream>
 using std::cerr;
 
+#include <iomanip>
+using std::fixed;
+using std::setprecision;
+using std::setw;
+
 #include <fstream>
 using std::ifstream;
+using std::ofstream;
 
 ParticleSystem::ParticleSystem() :
 	mSize( 0 ), //{{{
@@ -105,6 +111,37 @@ void ParticleSystem::load( string fileName )
 	file.close();
 } //}}}
 
+void ParticleSystem::save( string fileName )
+{ //{{{
+	ofstream file( fileName.c_str() );
+	if( !file.good() )
+	{
+		cerr << "Could not save to file\n";
+		return;
+	}
+
+	/*
+	file.width( 6 );
+	file.precision( 4 );
+	file.setf( std::ios::right, std::ios::floatfield );
+	file.setf( std::ios::fixed, std::ios::floatfield );
+	file.setf( std::ios::showpoint, std::ios::floatfield );
+	file.fill( ' ' )
+	*/
+
+	for( unsigned int i = 0; i < this->mSize; ++i )
+	{
+		file
+			<< fixed << setprecision( 4 ) << setw( 7 ) << this->mParticles[ i ]->x << "\t"
+			<< fixed << setprecision( 4 ) << setw( 7 ) << this->mParticles[ i ]->y << "\t"
+			<< fixed << setprecision( 4 ) << setw( 7 ) << this->mParticles[ i ]->m << "\t"
+			<< fixed << setprecision( 4 ) << setw( 7 ) << this->mParticles[ i ]->ax << "\t"
+			<< fixed << setprecision( 4 ) << setw( 7 ) << this->mParticles[ i ]->ay << "\n";
+	}
+
+	file.close();
+} //}}}
+
 void ParticleSystem::clear()
 { //{{{
 	for( unsigned int i = 0; i < this->mSize; i++ )
@@ -141,7 +178,7 @@ ostream& operator<<( ostream& out, const ParticleSystem& toPrint )
 	{
 		Particle* p = toPrint.getParticle( i );
 		if( p != NULL )
-			out << "< " << p->x << ", " << p->y << " > : " << p->m << "\n";
+			out << *p << "\n";
 	}
 	out << "<-- ParticleSystem -->\n";
 } //}}}

@@ -55,6 +55,12 @@ class ParticleSystem
 		void load( std::string fileName );
 
 		/**
+		 * Saves to a file.
+		 * @param fileName : filename to save to
+		 */
+		void save( std::string fileName );
+
+		/**
 		 * Clears all memory allocated for this.
 		 */
 		void clear();
