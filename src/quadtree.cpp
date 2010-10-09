@@ -68,21 +68,22 @@ void Quadtree::add(Particle* node)
 		this->mChildren[ this->getQuadrant( this->me ) ]->add( this->me );
 
 		long double x, y, m;
-		m = this->me->m + node->m;
-		x = (this->me->x * this->me->m + node->x * node->m)/m;
-		y = (this->me->y * this->me->m + node->y * node->m)/m;
+		m = fabs( this->me->m ) + fabs( node->m );
+		x = (this->me->x * fabs( this->me->m ) + node->x * fabs( node->m ))/m;
+		y = (this->me->y * fabs( this->me->m ) + node->y * fabs( node->m ))/m;
 		this->me = new Particle( x, y, m );
 		this->numChildren = 2;
 		return;
 	}
 
 	this->mChildren[ this->getQuadrant( node ) ]->add( node );
-	this->me->x = (this->me->x * this->me->m + node->x * node->m)
-		/ (this->me->m + node->m);
-	this->me->y = (this->me->y * this->me->m + node->y * node->m)
-		/ (this->me->m + node->m);
-	this->me->m += node->m;
+	this->me->x = (this->me->x * fabs( this->me->m ) + node->x * fabs( node->m ))
+		/ (fabs( this->me->m ) + fabs( node->m ));
+	this->me->y = (this->me->y * fabs( this->me->m ) + node->y * fabs( node->m ))
+		/ (fabs( this->me->m ) + fabs( node->m ));
+	this->me->m += fabs( node->m );
 	this->numChildren++;
+	cerr << *(this->me) << "\n";
 } //}}}
 
 void Quadtree::add(Quadtree* tree)
