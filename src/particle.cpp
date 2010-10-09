@@ -21,6 +21,10 @@
 #define PARTICLE_CPP
 
 #include <ostream>
+#include <iomanip>
+using std::fixed;
+using std::setprecision;
+using std::setw;
 
 /**
  * Class used to represent a point with an x, y and mass.
@@ -58,7 +62,12 @@ class Particle
 		friend std::ostream& operator<<( std::ostream& out,
 			const Particle& toPrint )
 		{
-			out << "<" << toPrint.x << ", " << toPrint.y << ">";
+			out << "<"
+				<< fixed << setprecision( 4 ) << setw( 8 ) << toPrint.x << ", "
+				<< fixed << setprecision( 4 ) << setw( 8 ) << toPrint.y << "> ["
+				<< fixed << setprecision( 4 ) << setw( 8 ) << toPrint.ax << ", "
+				<< fixed << setprecision( 4 ) << setw( 8 ) << toPrint.ay << "] "
+				<< fixed << setprecision( 4 ) << setw( 8 ) << toPrint.m;
 		}
 };
 
