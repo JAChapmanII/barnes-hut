@@ -71,6 +71,7 @@ int main( int argc, char** argv )
 
 	for( unsigned int i = 0; i < mPS.getSize(); i++ )
 	{
+		cout << i << "\n";
 		mQT.add( mPS.getParticle( i ) );
 	}
 	cout << "Yay! We didn't crash\n";
