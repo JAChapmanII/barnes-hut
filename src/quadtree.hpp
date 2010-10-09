@@ -17,39 +17,3 @@
  * along with Barnes-Hut.  If not, see <http://www.gnu.org/licenses/>.
  *
  */// }}}
-#include <iostream>
-using std::cout;
-using std::cerr;
-using std::cin;
-
-#include <string>
-using std::string;
-
-#include "particle_system.hpp"
-
-int main( int argc, char** argv )
-{
-	cout << "Arguments:\n";
-	for( int i = 0; i < argc; i++ )
-	{
-		cout << "   " << i << ": " << argv[i] << '\n';
-	}
-
-	string fileName("");
-	if( argc < 2 )
-	{
-		cout << "Please input the initial particle descriptor file name: ";
-		cin >> fileName; cout << '\n';
-	}
-	else
-	{
-		fileName = (string)(argv[argc - 1]);
-	}
-	cout << "Selected file: " << fileName << "\n\n";
-
-	ParticleSystem mPS( fileName );
-	cout << mPS << '\n';
-
-	return 0;
-}
-
