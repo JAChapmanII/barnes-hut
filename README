@@ -19,7 +19,6 @@ License:
 	GPL3, see COPYING
 
 Notes:
-	It's flawed right now. Very subtly flawed. Or, I haven't looked at it enough.
-	Right now thoug, it produces data that is .12% to 5% off of a reference
-	implementation. Grrr. It helps that I don't know the proper handling method
-	for zero-mass trees.
+	Maybe it's not that flawed, but the example I'm working from is not what I
+	think it is. When I set tau = 0, I get the exact same output as the
+	reference.
