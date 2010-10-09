@@ -56,30 +56,12 @@ int main( int argc, char** argv )
 		return 0;
 	}
 	cout << mPS << '\n';
-
-	Particle* cur;
-	cur = mPS.getParticle( 0 );
-	float minX = cur->x,
-			maxX = cur->x,
-			minY = cur->y,
-			maxY = cur->y;
-	for( unsigned int i = 1; i < mPS.getSize(); i++ )
-	{
-		cur = mPS.getParticle( i );
-		if( cur->x < minX )
-			minX = cur->x;
-		if( cur->x > maxX )
-			maxX = cur->x;
-		if( cur->y < minY )
-			minY = cur->y;
-		if( cur->y > maxY )
-			maxY = cur->y;
-	}
-	cout << "min/max X: " << minX << ", " << maxX << "\n";
-	cout << "min/max Y: " << minY << ", " << maxY << "\n";
+	cout << "mPS: [" << mPS.getLeft() << ", " << mPS.getRight() << "] ["
+		<< mPS.getBottom() << ", " << mPS.getTop() << "]\n";
 
 	cout << "Putting all particles into Quadtree, let's see if we SIGSEGV\n";
-	Quadtree mQT( minX - 1.0, maxX + 1.0, maxY + 1.0, minY - 1.0, NULL );
+	Quadtree mQT( mPS.getLeft() - 1.0, mPS.getRight() + 1.0,
+			mPS.getBottom() - 1.0, mPS.getTop() + 1.0, NULL );
 	cout << "[" << mQT.getLeft() << ", " << mQT.getRight() << "] ["
 		<< mQT.getBottom() << ", " << mQT.getTop() << "]\n";
 
