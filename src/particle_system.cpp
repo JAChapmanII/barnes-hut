@@ -120,23 +120,14 @@ void ParticleSystem::save( string fileName )
 		return;
 	}
 
-	/*
-	file.width( 6 );
-	file.precision( 4 );
-	file.setf( std::ios::right, std::ios::long doublefield );
-	file.setf( std::ios::fixed, std::ios::long doublefield );
-	file.setf( std::ios::showpoint, std::ios::long doublefield );
-	file.fill( ' ' )
-	*/
-
 	for( unsigned int i = 0; i < this->mSize; ++i )
 	{
 		file
-			<< fixed << setprecision( 4 ) << setw( 7 ) << this->mParticles[ i ]->x << "\t"
-			<< fixed << setprecision( 4 ) << setw( 7 ) << this->mParticles[ i ]->y << "\t"
-			<< fixed << setprecision( 4 ) << setw( 7 ) << this->mParticles[ i ]->m << "\t"
-			<< fixed << setprecision( 4 ) << setw( 7 ) << this->mParticles[ i ]->ax << "\t"
-			<< fixed << setprecision( 4 ) << setw( 7 ) << this->mParticles[ i ]->ay << "\n";
+			<< fixed << setprecision( 4 ) << setw( 8 ) << this->mParticles[ i ]->x << "\t"
+			<< fixed << setprecision( 4 ) << setw( 8 ) << this->mParticles[ i ]->y << "\t"
+			<< fixed << setprecision( 4 ) << setw( 8 ) << this->mParticles[ i ]->m << "\t"
+			<< fixed << setprecision( 4 ) << setw( 8 ) << this->mParticles[ i ]->ax << "\t"
+			<< fixed << setprecision( 4 ) << setw( 8 ) << this->mParticles[ i ]->ay << "\n";
 	}
 
 	file.close();
