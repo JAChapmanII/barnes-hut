@@ -128,7 +128,8 @@ void Quadtree::update( Particle* p )
 		return;
 	}
 
-	if(( this->me->m == 0 ) || ( ((this->right - this->left) / d) > TAU ))
+	if(( this->me->m == 0 ) || ( ((this->right - this->left) / d) > TAU ) ||
+		( this->getQuadrant( p ) != -1 ))
 	{
 		cerr << "Looking deeper\n";
 		this->mChildren[ 0 ]->update( p );
