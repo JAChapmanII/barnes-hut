@@ -23,6 +23,9 @@
 #include <iostream>
 using std::cerr;
 
+#include <algorithm>
+using std::swap;
+
 Quadtree::Quadtree(float iL, float iR, float iT, float iB, Particle* iMe) :
 	left( iL ), //{{{
 	right( iR ),
@@ -32,6 +35,10 @@ Quadtree::Quadtree(float iL, float iR, float iT, float iB, Particle* iMe) :
 	me( iMe ),
 	mChildren( NULL )
 {
+	if( this->left > this->right )
+		swap( this->left, this->right );
+	if( this->bottom > this->top )
+		swap( this->bottom, this->top );
 } //}}}
 
 void Quadtree::add(Particle* node)
@@ -139,5 +146,25 @@ void Quadtree::makeChildren()
 	this->mChildren[ 3 ] = new Quadtree(
 			(this->left + this->right)/2.0, this->right,
 			(this->top + this->bottom)/2.0, this->bottom, NULL );
+} //}}}
+
+float Quadtree::getLeft()
+{ //{{{
+	return this->left;
+} //}}}
+
+float Quadtree::getRight()
+{ //{{{
+	return this->right;
+} //}}}
+
+float Quadtree::getTop()
+{ //{{{
+	return this->top;
+} //}}}
+
+float Quadtree::getBottom()
+{ //{{{
+	return this->bottom;
 } //}}}
 

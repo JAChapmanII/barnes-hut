@@ -68,6 +68,30 @@ class Quadtree
 		 */
 		unsigned int getQuadrant( Particle* node ) const;
 
+		/**
+		 * Returns left side.
+		 * @return : left side
+		 */
+		float getLeft();
+
+		/**
+		 * Returns right side.
+		 * @return : right side
+		 */
+		float getRight();
+
+		/**
+		 * Returns top side.
+		 * @return : top side
+		 */
+		float getTop();
+
+		/**
+		 * Returns bottom side.
+		 * @return : bottom side
+		 */
+		float getBottom();
+
 	private:
 		/**
 		 * Allocates space for and creates children Quadtrees
