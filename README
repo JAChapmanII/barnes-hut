@@ -19,6 +19,5 @@ License:
 	GPL3, see COPYING
 
 Notes:
-	Maybe it's not that flawed, but the example I'm working from is not what I
-	think it is. When I set tau = 0, I get the exact same output as the
-	reference.
+	Pay attention to compiler warnings about using == and != on floating point
+	values if you ever make something like this!
