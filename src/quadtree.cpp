@@ -29,6 +29,7 @@ using std::swap;
 #include <cmath>
 
 static const unsigned int NOT_A_QUADRANT = 5;
+static const long double EQUAL_DELTA = 0.0000000001;
 
 Quadtree::Quadtree(long double iL, long double iR, long double iT, long double iB, Particle* iMe) :
 	left( iL ), //{{{
@@ -121,7 +122,7 @@ void Quadtree::update( Particle* p )
 
 	if( !this->isParent )
 	{
-		if( this->me->m == 0 )
+		if( fabs( this->me->m ) < EQUAL_DELTA )
 			return;
 		long double gm = p->m * this->me->m;
 		p->ax += dx * gm / d3;
@@ -129,7 +130,7 @@ void Quadtree::update( Particle* p )
 		return;
 	}
 
-	if(( this->me->m == 0 ) ||
+	if(( fabs( this->me->m ) < EQUAL_DELTA ) ||
 		( ((this->right - this->left) / d) >= this->tau ) ||
 		( this->getQuadrant( p ) != NOT_A_QUADRANT ))
 	{
@@ -165,7 +166,7 @@ void Quadtree::recalculateMe()
 			this->me->m += this->mChildren[ i ]->getMe()->m;
 	}
 
-	if( this->me->m == 0 )
+	if( fabs( this->me->m ) < EQUAL_DELTA )
 		return;
 
 	Particle* tChild = NULL;
