@@ -40,6 +40,11 @@ class Quadtree
 		Quadtree(long double iL, long double iR, long double iT, long double iB, Particle* iMe);
 
 		/**
+		 * Proper deconstructor that delets all associated memory.
+		 */
+		~Quadtree();
+
+		/**
 		 * Add a node to this tree.
 		 * @param node : node to be added
 		 */
@@ -102,6 +107,18 @@ class Quadtree
 		 */
 		long double getBottom();
 
+		/**
+		 * Returns the tau of this quadtree.
+		 * @return : this's tau
+		 */
+		long double getTau();
+
+		/**
+		 * Sets this tau of this quadtree.
+		 * @param nTau : new value for tau
+		 */
+		void setTau( long double nTau );
+
 	private:
 		/**
 		 * Allocates space for and creates children Quadtrees
@@ -110,6 +127,7 @@ class Quadtree
 
 		long double left, right;
 		long double top, bottom;
+		long double tau;
 		bool isParent;
 		Particle* me;
 		Quadtree** mChildren;

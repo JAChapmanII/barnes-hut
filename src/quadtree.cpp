@@ -33,6 +33,7 @@ Quadtree::Quadtree(long double iL, long double iR, long double iT, long double i
 	right( iR ),
 	top( iT ),
 	bottom( iB ),
+	tau( 0.5 ),
 	isParent( false ),
 	me( iMe ),
 	mChildren( NULL )
@@ -41,6 +42,11 @@ Quadtree::Quadtree(long double iL, long double iR, long double iT, long double i
 		swap( this->left, this->right );
 	if( this->bottom > this->top )
 		swap( this->bottom, this->top );
+} //}}}
+
+Quadtree::~Quadtree()
+{ //{{{
+	this->clear();
 } //}}}
 
 void Quadtree::add(Particle* node)
@@ -105,12 +111,6 @@ void Quadtree::update( Particle* p )
 	if(( this->me == NULL ) || ( p == NULL ) || ( this->me == p ))
 		return;
 
-	// G = 6.6726 x 10-11N-m2/kg2
-	//static const long double GRAVITY = 0.000000000066726;
-	static const long double GRAVITY = 1;
-	//static const long double TAU = 0.5;
-	static const long double TAU = 0.0;
-
 	long double dx = this->me->x - p->x;
 	long double dy = this->me->y - p->y;
 	long double d2 = dx * dx + dy * dy;
@@ -121,13 +121,13 @@ void Quadtree::update( Particle* p )
 	{
 		if( this->me->m == 0 )
 			return;
-		long double gm = GRAVITY * p->m * this->me->m;
+		long double gm = p->m * this->me->m;
 		p->ax += dx * gm / d3;
 		p->ay += dy * gm / d3;
 		return;
 	}
 
-	if(( this->me->m == 0 ) || ( ((this->right - this->left) / d) >= TAU ) ||
+	if(( this->me->m == 0 ) || ( ((this->right - this->left) / d) >= this->tau ) ||
 		( this->getQuadrant( p ) != -1 ))
 	{
 		this->mChildren[ 0 ]->update( p );
@@ -138,7 +138,7 @@ void Quadtree::update( Particle* p )
 	}
 	else
 	{
-		long double gm = GRAVITY * p->m * this->me->m;
+		long double gm = p->m * this->me->m;
 		p->ax += dx * gm / d3;
 		p->ay += dy * gm / d3;
 		return;
@@ -253,5 +253,15 @@ long double Quadtree::getTop()
 long double Quadtree::getBottom()
 { //{{{
 	return this->bottom;
+} //}}}
+
+long double Quadtree::getTau()
+{ //{{{
+	return this->tau;
+} //}}}
+
+void Quadtree::setTau( long double nTau )
+{ //{{{
+	this->tau = fabs( nTau );
 } //}}}
 
