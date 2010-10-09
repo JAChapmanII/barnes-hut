@@ -72,9 +72,9 @@ class ParticleSystem
 		unsigned int getSize() const;
 
 		/**
-		 * Returns a float[3] representing a particle.
+		 * Returns a long double[3] representing a particle.
 		 * @param indici : indice of particle to return
-		 * @return : float[3] representing mParticles[indice]
+		 * @return : long double[3] representing mParticles[indice]
 		 */
 		Particle* getParticle( unsigned int indice ) const;
 
@@ -90,25 +90,25 @@ class ParticleSystem
 		 * Return the lowest x value of any particle.
 		 * @return : leftmost particle's x
 		 */
-		float getLeft() const;
+		long double getLeft() const;
 
 		/**
 		 * Return the highest x value of any particle.
 		 * @return : rightmost particle's x
 		 */
-		float getRight() const;
+		long double getRight() const;
 
 		/**
 		 * Return the lowest y value of any particle.
 		 * @return : bottom-most particle's y
 		 */
-		float getBottom() const;
+		long double getBottom() const;
 
 		/**
 		 * Return the highest x valu of any particle.
 		 * @return : top-most particle's y
 		 */
-		float getTop() const;
+		long double getTop() const;
 
 	private:
 		/// The number of particles in this system.

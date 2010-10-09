@@ -123,9 +123,9 @@ void ParticleSystem::save( string fileName )
 	/*
 	file.width( 6 );
 	file.precision( 4 );
-	file.setf( std::ios::right, std::ios::floatfield );
-	file.setf( std::ios::fixed, std::ios::floatfield );
-	file.setf( std::ios::showpoint, std::ios::floatfield );
+	file.setf( std::ios::right, std::ios::long doublefield );
+	file.setf( std::ios::fixed, std::ios::long doublefield );
+	file.setf( std::ios::showpoint, std::ios::long doublefield );
 	file.fill( ' ' )
 	*/
 
@@ -183,22 +183,22 @@ ostream& operator<<( ostream& out, const ParticleSystem& toPrint )
 	out << "<-- ParticleSystem -->\n";
 } //}}}
 
-float ParticleSystem::getLeft() const
+long double ParticleSystem::getLeft() const
 { //{{{
 	return this->minXP->x;
 } //}}}
 
-float ParticleSystem::getRight() const
+long double ParticleSystem::getRight() const
 { //{{{
 	return this->maxXP->x;
 } //}}}
 
-float ParticleSystem::getBottom() const
+long double ParticleSystem::getBottom() const
 { //{{{
 	return this->minYP->y;
 } //}}}
 
-float ParticleSystem::getTop() const
+long double ParticleSystem::getTop() const
 { //{{{
 	return this->maxYP->y;
 } //}}}

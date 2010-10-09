@@ -37,7 +37,7 @@ class Quadtree
 		 * @param iMe : initial point to contain
 		 * @note : iMe should only be NULL for empty nodes
 		 */
-		Quadtree(float iL, float iR, float iT, float iB, Particle* iMe);
+		Quadtree(long double iL, long double iR, long double iT, long double iB, Particle* iMe);
 
 		/**
 		 * Add a node to this tree.
@@ -77,25 +77,25 @@ class Quadtree
 		 * Returns left side.
 		 * @return : left side
 		 */
-		float getLeft();
+		long double getLeft();
 
 		/**
 		 * Returns right side.
 		 * @return : right side
 		 */
-		float getRight();
+		long double getRight();
 
 		/**
 		 * Returns top side.
 		 * @return : top side
 		 */
-		float getTop();
+		long double getTop();
 
 		/**
 		 * Returns bottom side.
 		 * @return : bottom side
 		 */
-		float getBottom();
+		long double getBottom();
 
 	private:
 		/**
@@ -103,8 +103,8 @@ class Quadtree
 		 */
 		void makeChildren();
 
-		float left, right;
-		float top, bottom;
+		long double left, right;
+		long double top, bottom;
 		unsigned int numChildren;
 		Particle* me;
 		Quadtree** mChildren;

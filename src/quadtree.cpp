@@ -28,7 +28,7 @@ using std::swap;
 
 #include <cmath>
 
-Quadtree::Quadtree(float iL, float iR, float iT, float iB, Particle* iMe) :
+Quadtree::Quadtree(long double iL, long double iR, long double iT, long double iB, Particle* iMe) :
 	left( iL ), //{{{
 	right( iR ),
 	top( iT ),
@@ -67,7 +67,7 @@ void Quadtree::add(Particle* node)
 		this->mChildren[ this->getQuadrant( node ) ]->add( node );
 		this->mChildren[ this->getQuadrant( this->me ) ]->add( this->me );
 
-		float x, y, m;
+		long double x, y, m;
 		m = this->me->m + node->m;
 		x = (this->me->x * this->me->m + node->x * node->m)/m;
 		y = (this->me->y * this->me->m + node->y * node->m)/m;
@@ -111,22 +111,22 @@ void Quadtree::update( Particle* p )
 		return;
 
 	// G = 6.6726 x 10-11N-m2/kg2
-	static const float GRAVITY = 0.000000000066726;
+	static const long double GRAVITY = 0.000000000066726;
 
-	float dx = this->me->x - p->x;
-	float dy = this->me->y - p->y;
-	float d2 = dx * dx + dy * dy;
+	long double dx = this->me->x - p->x;
+	long double dy = this->me->y - p->y;
+	long double d2 = dx * dx + dy * dy;
 
 	if( this->numChildren == 0 )
 	{
-		float gm = GRAVITY * p->m * this->me->m;
+		long double gm = GRAVITY * p->m * this->me->m;
 		p->ax += dx * gm / d2;
 		p->ay += dy * gm / d2;
 		return;
 	}
 
-	static const float TAU = 0.5;
-	float d = sqrt( d2 );
+	static const long double TAU = 0.5;
+	long double d = sqrt( d2 );
 	if( ((this->right - this->left) / d) < TAU )
 	{
 		this->mChildren[ 0 ]->update( p );
@@ -137,7 +137,7 @@ void Quadtree::update( Particle* p )
 	}
 	else
 	{
-		float gm = GRAVITY * p->m * this->me->m;
+		long double gm = GRAVITY * p->m * this->me->m;
 		p->ax += dx * gm / d2;
 		p->ay += dy * gm / d2;
 		return;
@@ -189,8 +189,8 @@ void Quadtree::makeChildren()
 	}
 
 	this->mChildren = new Quadtree*[ 4 ];
-	float midX = (this->left + this->right)/2.0;
-	float midY = (this->bottom + this->top)/2.0;
+	long double midX = (this->left + this->right)/2.0;
+	long double midY = (this->bottom + this->top)/2.0;
 	this->mChildren[ 0 ] = new Quadtree(
 			midX, this->right,
 			midY, this->top, NULL );
@@ -205,22 +205,22 @@ void Quadtree::makeChildren()
 			this->bottom, midY, NULL );
 } //}}}
 
-float Quadtree::getLeft()
+long double Quadtree::getLeft()
 { //{{{
 	return this->left;
 } //}}}
 
-float Quadtree::getRight()
+long double Quadtree::getRight()
 { //{{{
 	return this->right;
 } //}}}
 
-float Quadtree::getTop()
+long double Quadtree::getTop()
 { //{{{
 	return this->top;
 } //}}}
 
-float Quadtree::getBottom()
+long double Quadtree::getBottom()
 { //{{{
 	return this->bottom;
 } //}}}

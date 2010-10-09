@@ -32,9 +32,9 @@ using std::setw;
 class Particle
 {
 	public:
-		float x, y;
-		float m;
-		float ax, ay;
+		long double x, y;
+		long double m;
+		long double ax, ay;
 
 		Particle() :
 			x(0),
@@ -45,7 +45,7 @@ class Particle
 		{
 		}
 
-		Particle( float iX, float iY, float iM ) :
+		Particle( long double iX, long double iY, long double iM ) :
 			x( iX ),
 			y( iY ),
 			m( iM ),
