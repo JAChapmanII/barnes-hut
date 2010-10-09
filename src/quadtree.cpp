@@ -46,10 +46,9 @@ void Quadtree::add(Particle* node)
 	if( node == NULL )
 		return;
 
-	if(( node->x < this->left ) || ( node->x >= this->right ) ||
-		( node->y >= this->top ) || ( node->y < this->bottom ))
+	if( this->getQuadrant( node ) == -1 )
 	{
-		cerr << "Particle does not fit into this Quadtree\n";
+		cerr << "Node does not fit here\n";
 		return;
 	}
 
@@ -62,8 +61,10 @@ void Quadtree::add(Particle* node)
 	if( this->numChildren == 0 )
 	{
 		this->makeChildren();
+
 		this->mChildren[ this->getQuadrant( node ) ]->add( node );
 		this->mChildren[ this->getQuadrant( this->me ) ]->add( this->me );
+
 		float x, y, m;
 		x = (this->me->x + node->x)/2.0;
 		y = (this->me->y + node->y)/2.0;
@@ -113,17 +114,23 @@ unsigned int Quadtree::getQuadrant( Particle* node ) const
 		return -1;
 
 	if(( node->x < this->left ) || ( node->x >= this->right ) ||
-		( node->y >= this->top ) || ( node->y < this->bottom ))
+		( node->y < this->bottom ) || ( node->y >= this->top ))
 		return -1;
 
-	unsigned int quad = 0;
-	if( node->x >= (this->left + this->right)/2.0 )
-		quad += 2;
+	if( node->x < (this->left + this->right)/2.0 )
+	{
+		if( node->y < (this->top + this->bottom)/2.0 )
+			return 2;
+		return 1;
+	}
+	else
+	{
+		if( node->y < (this->top + this->bottom)/2.0 )
+			return 3;
+		return 0;
+	}
 
-	if( node->y < (this->top + this->bottom)/2.0 )
-		quad += 1;
-
-	return quad;
+	return -1;
 } //}}}
 
 void Quadtree::makeChildren()
@@ -131,21 +138,30 @@ void Quadtree::makeChildren()
 	if( this->me == NULL )
 		return;
 
-	this->clear();
+	if( this->numChildren != 0 )
+	{
+		for( unsigned int i = 0; i < 4; ++i )
+		{
+			delete this->mChildren[ i ];
+			this->mChildren[ i ] = NULL;
+		}
+	}
 
 	this->mChildren = new Quadtree*[ 4 ];
+	float midX = (this->left + this->right)/2.0;
+	float midY = (this->bottom + this->top)/2.0;
 	this->mChildren[ 0 ] = new Quadtree(
-			(this->left + this->right)/2.0, this->right,
-			this->top, (this->top + this->bottom)/2.0, NULL );
+			midX, this->right,
+			midY, this->top, NULL );
 	this->mChildren[ 1 ] = new Quadtree(
-			this->left, (this->left + this->right)/2.0f,
-			this->top, (this->top + this->bottom)/2.0, NULL );
+			this->left, midX,
+			midY, this->top, NULL );
 	this->mChildren[ 2 ] = new Quadtree(
-			this->left, (this->left + this->right)/2.0f,
-			(this->top + this->bottom)/2.0, this->bottom, NULL );
+			this->left, midX,
+			this->bottom, midY, NULL );
 	this->mChildren[ 3 ] = new Quadtree(
-			(this->left + this->right)/2.0, this->right,
-			(this->top + this->bottom)/2.0, this->bottom, NULL );
+			midX, this->right,
+			this->bottom, midY, NULL );
 } //}}}
 
 float Quadtree::getLeft()
