@@ -23,7 +23,7 @@
 #include <iostream>
 using std::cerr;
 
-Quadtree::Quadtree(float iL, float iR, float iT, float iB, Node* iMe) :
+Quadtree::Quadtree(float iL, float iR, float iT, float iB, Particle* iMe) :
 	left( iL ), //{{{
 	right( iR ),
 	top( iT ),
@@ -34,7 +34,7 @@ Quadtree::Quadtree(float iL, float iR, float iT, float iB, Node* iMe) :
 {
 } //}}}
 
-void Quadtree::add(Node* node)
+void Quadtree::add(Particle* node)
 { //{{{
 	if( node == NULL )
 		return;
@@ -42,7 +42,7 @@ void Quadtree::add(Node* node)
 	if(( node->x < this->left ) || ( node->x >= this->right ) ||
 		( node->y >= this->top ) || ( node->y < this->bottom ))
 	{
-		cerr << "Node does not fit into this Quadtree\n";
+		cerr << "Particle does not fit into this Quadtree\n";
 		return;
 	}
 
@@ -61,7 +61,7 @@ void Quadtree::add(Node* node)
 		x = (this->me->x + node->x)/2.0;
 		y = (this->me->y + node->y)/2.0;
 		m = (this->me->m + node->m)/2.0;
-		this->me = new Node( x, y, m );
+		this->me = new Particle( x, y, m );
 		return;
 	}
 
@@ -95,12 +95,12 @@ void Quadtree::clear()
 	}
 } //}}}
 
-Quadtree::Node* Quadtree::getMe()
+Particle* Quadtree::getMe()
 { //{{{
 	return this->me;
 } //}}}
 
-unsigned int Quadtree::getQuadrant( Node* node ) const
+unsigned int Quadtree::getQuadrant( Particle* node ) const
 { //{{{
 	if( node == NULL )
 		return -1;

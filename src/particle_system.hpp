@@ -23,6 +23,8 @@
 #include <string>
 #include <ostream>
 
+#include "particle.cpp"
+
 /**
  * Utility class used for loading the descriptions of particles out of a file
  * and into memory.
@@ -68,7 +70,7 @@ class ParticleSystem
 		 * @param indici : indice of particle to return
 		 * @return : float[3] representing mParticles[indice]
 		 */
-		float* getParticle( unsigned int indice ) const;
+		Particle* getParticle( unsigned int indice ) const;
 
 		/**
 		* Friend function used to print the internals of this to an ostream.
@@ -82,7 +84,7 @@ class ParticleSystem
 		/// The number of particles in this system.
 		unsigned int mSize;
 		/// A Nx3 matrix representing mass and position.
-		float** mParticles;
+		Particle** mParticles;
 
 		ParticleSystem( const ParticleSystem& right );
 		ParticleSystem& operator=( const ParticleSystem& right );

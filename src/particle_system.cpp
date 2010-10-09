@@ -65,17 +65,17 @@ void ParticleSystem::load( string fileName )
 
 	file.close();
 	file.open( fileName.c_str() );
-	this->mParticles = new float*[ this->mSize ];
+	this->mParticles = new Particle*[ this->mSize ];
 	for( unsigned int i = 0; i < this->mSize; i++ )
 	{
-		this->mParticles[ i ] = new float[ 3 ];
+		this->mParticles[ i ] = new Particle();
 	}
 
 	for( unsigned int l = 0; l < this->mSize; l++ )
 	{
-		file >> this->mParticles[ l ][ 0 ];
-		file >> this->mParticles[ l ][ 1 ];
-		file >> this->mParticles[ l ][ 2 ];
+		file >> this->mParticles[ l ]->x;
+		file >> this->mParticles[ l ]->y;
+		file >> this->mParticles[ l ]->m;
 
 		if( !file.good() )
 		{
@@ -104,7 +104,7 @@ unsigned int ParticleSystem::getSize() const
 	return this->mSize;
 } //}}}
 
-float* ParticleSystem::getParticle( unsigned int indice ) const
+Particle* ParticleSystem::getParticle( unsigned int indice ) const
 { //{{{
 	if( indice >= this->mSize )
 		return NULL;
@@ -118,9 +118,9 @@ ostream& operator<<( ostream& out, const ParticleSystem& toPrint )
 	out << "this->mSize = " << toPrint.getSize() << "\n";
 	for( unsigned int i = 0; i < toPrint.getSize(); i++ )
 	{
-		float* p = toPrint.getParticle( i );
+		Particle* p = toPrint.getParticle( i );
 		if( p != NULL )
-			out << "< " << p[ 0 ] << ", " << p[ 1 ] << " > : " << p[ 2 ] << "\n";
+			out << "< " << p->x << ", " << p->y << " > : " << p->m << "\n";
 	}
 	out << "<-- ParticleSystem -->\n";
 } //}}}

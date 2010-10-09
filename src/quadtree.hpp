@@ -20,34 +20,14 @@
 #ifndef QUADTREE_HPP
 #define QUADTREE_HPP
 
+#include "particle.cpp"
+
 /**
  * Class representing a recursive space division into four quadrants.
  */
 class Quadtree
 {
 	public:
-		/**
-		 * Class used to represent a point with an x, y and mass.
-		 */
-		class Node
-		{ //{{{
-			public:
-				float x, y, m;
-				Node() :
-					x(0),
-					y(0),
-					m(0)
-				{
-				}
-
-				Node( float iX, float iY, float iM ) :
-					x( iX ),
-					y( iY ),
-					m( iM )
-				{
-				}
-		}; //}}}
-
 		/**
 		 * Create a quadtree representing a certain amount of space.
 		 * @param iL : left hand coordinate
@@ -57,13 +37,13 @@ class Quadtree
 		 * @param iMe : initial point to contain
 		 * @note : iMe should only be NULL for empty nodes
 		 */
-		Quadtree(float iL, float iR, float iT, float iB, Node* iMe);
+		Quadtree(float iL, float iR, float iT, float iB, Particle* iMe);
 
 		/**
 		 * Add a node to this tree.
 		 * @param node : node to be added
 		 */
-		void add(Node* node);
+		void add(Particle* node);
 		/**
 		 * Add an entire Quadtree to this one.
 		 * @param tree : tree to be added
@@ -79,14 +59,14 @@ class Quadtree
 		 * Return the point this Quadtree represents.
 		 * @return : point representing average of all nodes in this
 		 */
-		Node* getMe();
+		Particle* getMe();
 
 		/**
 		 * Return the quadrant a node shoud be point into in this tree.
 		 * @param node : node to find quadrant of
 		 * @return : quadrant where node should go
 		 */
-		unsigned int getQuadrant( Node* node ) const;
+		unsigned int getQuadrant( Particle* node ) const;
 
 	private:
 		/**
@@ -97,7 +77,7 @@ class Quadtree
 		float left, right;
 		float top, bottom;
 		unsigned int numChildren;
-		Node* me;
+		Particle* me;
 		Quadtree** mChildren;
 };
 
