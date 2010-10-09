@@ -28,6 +28,8 @@ using std::string;
 #include "particle_system.hpp"
 #include "quadtree.hpp"
 
+static const long double QUAD_LEEWAY = 0.0000000001;
+
 int main( int argc, char** argv )
 {
 	// Print args, get fileName and print it {{{
@@ -49,7 +51,7 @@ int main( int argc, char** argv )
 		fileName = (string)(argv[argc - 1]);
 	}
 	outputName = fileName.substr( 0, fileName.find(".txt") ) + "_output.txt";
-	cout << "Selected file: " << fileName << "(output to: " << outputName << ")\n\n";
+	cout << "Selected file: " << fileName << " (output to: " << outputName << ")\n\n";
 	// }}}
 
 	ParticleSystem mPS( fileName );
@@ -59,35 +61,35 @@ int main( int argc, char** argv )
 		cout << "No particles in file\n";
 		return 0;
 	}
-	cout << mPS << '\n';
 	cout << "mPS: [" << mPS.getLeft() << ", " << mPS.getRight() << "] ["
 		<< mPS.getBottom() << ", " << mPS.getTop() << "]\n";
 
 	cout << "Putting all particles into Quadtree, let's see if we SIGSEGV\n";
+	// Figure out the sides of the Quadtree {{{
 	long double l = 0, r = 0, b = 0, t = 0;
 	long double w = mPS.getRight() - mPS.getLeft();
 	long double h = mPS.getTop() - mPS.getBottom();
 	if( w > h )
 	{
-		l = mPS.getLeft() - 1.0;
-		r = mPS.getRight() + 1.0;
-		b = mPS.getBottom() - 1.0 - (w - h)/2.0;
-		t = mPS.getTop() + 1.0 + (w - h)/2.0;
+		l = mPS.getLeft() - QUAD_LEEWAY;
+		r = mPS.getRight() + QUAD_LEEWAY;
+		b = mPS.getBottom() - QUAD_LEEWAY - (w - h)/2.0;
+		t = mPS.getTop() + QUAD_LEEWAY + (w - h)/2.0;
 	}
 	else
 	{
-		b = mPS.getBottom() - 1.0;
-		t = mPS.getTop() + 1.0;
-		l = mPS.getLeft() - 1.0 - (h - w)/2.0;
-		r = mPS.getRight() + 1.0 + (h - w)/2.0;
+		b = mPS.getBottom() - QUAD_LEEWAY;
+		t = mPS.getTop() + QUAD_LEEWAY;
+		l = mPS.getLeft() - QUAD_LEEWAY - (h - w)/2.0;
+		r = mPS.getRight() + QUAD_LEEWAY + (h - w)/2.0;
 	}
+	//}}}
 	Quadtree mQT( l, r, b, t, NULL );
 	cout << "[" << mQT.getLeft() << ", " << mQT.getRight() << "] ["
 		<< mQT.getBottom() << ", " << mQT.getTop() << "]\n";
 
 	for( unsigned int i = 0; i < mPS.getSize(); i++ )
 	{
-		cout << i << "\n";
 		mQT.add( mPS.getParticle( i ) );
 	}
 	cout << "Yay! We didn't crash\n";
