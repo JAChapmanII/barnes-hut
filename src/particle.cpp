@@ -17,6 +17,10 @@
  * along with Barnes-Hut.  If not, see <http://www.gnu.org/licenses/>.
  *
  */// }}}
+#ifndef PARTICLE_CPP
+#define PARTICLE_CPP
+
+#include <ostream>
 
 /**
  * Class used to represent a point with an x, y and mass.
@@ -45,5 +49,17 @@ class Particle
 			ay(0)
 		{
 		}
+
+		/**
+		* Friend function used to print the internals of this to an ostream.
+		* @param out : output stream
+		* @param toPrint : the Particle that should be printed
+		*/
+		friend std::ostream& operator<<( std::ostream& out,
+			const Particle& toPrint )
+		{
+			out << "<" << toPrint.x << ", " << toPrint.y << ">";
+		}
 };
 
+#endif // PARTICLE_CPP
