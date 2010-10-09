@@ -17,3 +17,50 @@
  * along with Barnes-Hut.  If not, see <http://www.gnu.org/licenses/>.
  *
  */// }}}
+#ifndef QUADTREE_HPP
+#define QUADTREE_HPP
+
+class Quadtree
+{
+	public:
+		class Node
+		{ //{{{
+			public:
+				float x, y, m;
+				Node() :
+					x(0),
+					y(0),
+					m(0)
+				{
+				}
+
+				Node( float iX, float iY, float iM ) :
+					x( iX ),
+					y( iY ),
+					m( iM )
+				{
+				}
+		}; //}}}
+
+		Quadtree(float iL, float iR, float iT, float iB, Node* iMe);
+
+		void add(Node* node);
+		void add(Quadtree* tree);
+
+		void clear();
+
+		Node* getMe();
+
+		unsigned int getQuadrant( Node* node ) const;
+
+	private:
+		void makeChildren();
+
+		float left, right;
+		float top, bottom;
+		unsigned int numChildren;
+		Node* me;
+		Quadtree** mChildren;
+};
+
+#endif // QUADTREE_HPP
