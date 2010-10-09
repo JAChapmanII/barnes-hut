@@ -131,6 +131,9 @@ class Quadtree
 		bool isParent;
 		Particle* me;
 		Quadtree** mChildren;
+
+		Quadtree( const Quadtree& right );
+		Quadtree &operator=( const Quadtree& right );
 };
 
 #endif // QUADTREE_HPP

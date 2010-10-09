@@ -28,6 +28,8 @@ using std::swap;
 
 #include <cmath>
 
+static const unsigned int NOT_A_QUADRANT = 5;
+
 Quadtree::Quadtree(long double iL, long double iR, long double iT, long double iB, Particle* iMe) :
 	left( iL ), //{{{
 	right( iR ),
@@ -54,7 +56,7 @@ void Quadtree::add(Particle* node)
 	if( node == NULL )
 		return;
 
-	if( this->getQuadrant( node ) == -1 )
+	if( this->getQuadrant( node ) == NOT_A_QUADRANT )
 	{
 		cerr << "Node does not fit here\n";
 		return;
@@ -127,8 +129,9 @@ void Quadtree::update( Particle* p )
 		return;
 	}
 
-	if(( this->me->m == 0 ) || ( ((this->right - this->left) / d) >= this->tau ) ||
-		( this->getQuadrant( p ) != -1 ))
+	if(( this->me->m == 0 ) ||
+		( ((this->right - this->left) / d) >= this->tau ) ||
+		( this->getQuadrant( p ) != NOT_A_QUADRANT ))
 	{
 		this->mChildren[ 0 ]->update( p );
 		this->mChildren[ 1 ]->update( p );
