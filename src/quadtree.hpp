@@ -119,6 +119,19 @@ class Quadtree
 		 */
 		void setTau( long double nTau );
 
+		/**
+		 * Returns a pointer to a child.
+		 * @param indice : which child to return
+		 * @return : pointer to that child
+		 */
+		Quadtree* getChild( unsigned int indice );
+
+		/**
+		 * Returns true if this has children.
+		 * @return : true if this has children
+		 */
+		bool isParent();
+
 	private:
 		/**
 		 * Allocates space for and creates children Quadtrees
@@ -128,7 +141,7 @@ class Quadtree
 		long double left, right;
 		long double top, bottom;
 		long double tau;
-		bool isParent;
+		bool parent;
 		Particle* me;
 		Quadtree** mChildren;
 

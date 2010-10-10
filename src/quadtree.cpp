@@ -37,7 +37,7 @@ Quadtree::Quadtree(long double iL, long double iR, long double iT, long double i
 	top( iT ),
 	bottom( iB ),
 	tau( 0.5 ),
-	isParent( false ),
+	parent( false ),
 	me( iMe ),
 	mChildren( NULL )
 {
@@ -69,10 +69,10 @@ void Quadtree::add(Particle* node)
 		return;
 	}
 
-	if( !this->isParent )
+	if( !this->parent )
 	{
 		this->makeChildren();
-		this->isParent = true;
+		this->parent = true;
 
 		this->mChildren[ this->getQuadrant( node ) ]->add( node );
 		this->mChildren[ this->getQuadrant( this->me ) ]->add( this->me );
@@ -94,7 +94,7 @@ void Quadtree::clear()
 { //{{{
 	this->me = NULL;
 
-	if( !this->isParent )
+	if( !this->parent )
 		return;
 
 	for( unsigned int i = 0; i < 4; ++i )
@@ -115,7 +115,7 @@ void Quadtree::update( Particle* p )
 	long double d = sqrt( d2 );
 	long double d3 = d * d2;
 
-	if( !this->isParent )
+	if( !this->parent )
 	{
 		if( fabs( this->me->m ) < EQUAL_DELTA )
 			return;
@@ -152,7 +152,7 @@ Particle* Quadtree::getMe()
 
 void Quadtree::recalculateMe()
 { //{{{
-	if( !this->isParent )
+	if( !this->parent )
 		return;
 
 	this->me->x = 0; this->me->y = 0; this->me->m = 0;
@@ -209,7 +209,7 @@ void Quadtree::makeChildren()
 	if( this->me == NULL )
 		return;
 
-	if( this->isParent )
+	if( this->parent )
 	{
 		for( unsigned int i = 0; i < 4; ++i )
 		{
@@ -265,9 +265,19 @@ long double Quadtree::getTau()
 void Quadtree::setTau( long double nTau )
 { //{{{
 	this->tau = nTau;
-	if( !this->isParent )
+	if( !this->parent )
 		return;
 	for( unsigned int i = 0; i < 4; i++ )
 		this->mChildren[ i ]->setTau( this->tau );
+} //}}}
+
+Quadtree* Quadtree::getChild( unsigned int indice )
+{ //{{{
+	return this->mChildren[ indice % 4 ];
+} //}}}
+
+bool Quadtree::isParent()
+{ //{{{
+	return this->parent;
 } //}}}
 
