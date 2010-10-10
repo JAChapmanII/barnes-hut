@@ -95,13 +95,11 @@ void Quadtree::add(Quadtree* tree)
 
 void Quadtree::clear()
 { //{{{
-	if( this->me == NULL )
-		return;
-	delete this->me;
 	this->me = NULL;
 
 	if( !this->isParent )
 		return;
+
 	for( unsigned int i = 0; i < 4; ++i )
 	{
 		delete this->mChildren[ i ];
