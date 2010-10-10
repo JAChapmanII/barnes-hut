@@ -101,7 +101,7 @@ int main( int argc, char** argv )
 	//}}}
 	Quadtree mQT( l, r, b, t, NULL );
 	mQT.setTau( tau );
-	cout << "[" << mQT.getLeft() << ", " << mQT.getRight() << "] ["
+	cout << "\t[" << mQT.getLeft() << ", " << mQT.getRight() << "] ["
 		<< mQT.getBottom() << ", " << mQT.getTop() << "]\n";
 
 	for( unsigned int i = 0; i < mPS.getSize(); i++ )
