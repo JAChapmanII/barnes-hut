@@ -128,8 +128,9 @@ void Quadtree::update( Particle* p )
 		return;
 	}
 
+	long double s = this->right - this->left;
 	if(( fabs( this->me->m ) < EQUAL_DELTA ) ||
-		( ((this->right - this->left) / d) >= this->tau ) ||
+		( (s / d) >= this->tau ) ||
 		( this->getQuadrant( p ) != NOT_A_QUADRANT ))
 	{
 		this->mChildren[ 0 ]->update( p );
@@ -140,9 +141,6 @@ void Quadtree::update( Particle* p )
 	}
 	else
 	{
-		static unsigned int numClumped = 0;
-		numClumped++;
-		cerr << "Num Clumped: " << numClumped << "\n";
 		long double gm = p->m * this->me->m;
 		p->ax += dx * gm / d3;
 		p->ay += dy * gm / d3;
@@ -159,6 +157,8 @@ void Quadtree::recalculateMe()
 { //{{{
 	if( !this->isParent )
 		return;
+	for( unsigned int i = 0; i < 4; i++ )
+		this->mChildren[ i ]->recalculateMe();
 
 	this->me->x = 0; this->me->y = 0; this->me->m = 0;
 	for( unsigned int i = 0; i < 4; i++ )
@@ -238,6 +238,8 @@ void Quadtree::makeChildren()
 	this->mChildren[ 3 ] = new Quadtree(
 			midX, this->right,
 			this->bottom, midY, NULL );
+	for( unsigned int i = 0; i < 4; i++ )
+		this->mChildren[ i ]->setTau( this->tau );
 } //}}}
 
 long double Quadtree::getLeft()
@@ -267,6 +269,10 @@ long double Quadtree::getTau()
 
 void Quadtree::setTau( long double nTau )
 { //{{{
-	this->tau = fabs( nTau );
+	this->tau = nTau;
+	if( !this->isParent )
+		return;
+	for( unsigned int i = 0; i < 4; i++ )
+		this->mChildren[ i ]->setTau( this->tau );
 } //}}}
 
