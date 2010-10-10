@@ -129,6 +129,9 @@ int main( int argc, char** argv )
 	cout << "Saving results\n";
 	mPS.save( outputName );
 
+	if( argc < 5 )
+		return 0;
+
 	RenderWindow window( VideoMode( 1000, 1000 ), "B-H", Style::Close );
 	View view( FloatRect( l, b, r, t ) );
 	window.SetView( view );
