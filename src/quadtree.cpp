@@ -142,6 +142,9 @@ void Quadtree::update( Particle* p )
 	}
 	else
 	{
+		static unsigned int numClumped = 0;
+		numClumped++;
+		cerr << "Num Clumped: " << numClumped << "\n";
 		long double gm = p->m * this->me->m;
 		p->ax += dx * gm / d3;
 		p->ay += dy * gm / d3;
@@ -186,11 +189,11 @@ void Quadtree::recalculateMe()
 unsigned int Quadtree::getQuadrant( Particle* node ) const
 { //{{{
 	if( node == NULL )
-		return -1;
+		return NOT_A_QUADRANT;
 
 	if(( node->x < this->left ) || ( node->x >= this->right ) ||
 		( node->y < this->bottom ) || ( node->y >= this->top ))
-		return -1;
+		return NOT_A_QUADRANT;
 
 	if( node->x < (this->left + this->right)/2.0 )
 	{
@@ -205,7 +208,7 @@ unsigned int Quadtree::getQuadrant( Particle* node ) const
 		return 0;
 	}
 
-	return -1;
+	return NOT_A_QUADRANT;
 } //}}}
 
 void Quadtree::makeChildren()
