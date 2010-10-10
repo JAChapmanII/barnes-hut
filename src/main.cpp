@@ -25,6 +25,9 @@ using std::cin;
 #include <string>
 using std::string;
 
+#include <sstream>
+using std::stringstream;
+
 #include "particle_system.hpp"
 #include "quadtree.hpp"
 
@@ -32,13 +35,15 @@ static const long double QUAD_LEEWAY = 0.0000000001;
 
 int main( int argc, char** argv )
 {
-	// Print args, get fileName and print it {{{
+	// Print args {{{
 	cout << "Arguments:\n";
 	for( int i = 0; i < argc; i++ )
 	{
 		cout << "   " << i << ": " << argv[i] << '\n';
 	}
+	//}}}
 
+	// Determine input/output file names {{{
 	string fileName("");
 	string outputName("");
 	if( argc < 2 )
@@ -48,14 +53,24 @@ int main( int argc, char** argv )
 	}
 	else
 	{
-		fileName = (string)(argv[argc - 1]);
+		fileName = (string)(argv[ 1 ]);
 	}
 	outputName = fileName.substr( 0, fileName.find(".txt") ) + "_output.txt";
-	cout << "Selected file: " << fileName << " (output to: " << outputName << ")\n\n";
+	cout << "Selected file: " << fileName
+		<< " (output to: " << outputName << ")\n";
 	// }}}
 
-	ParticleSystem mPS( fileName );
+	// Determin tau {{{
+	long double tau = 0.5;
+	if( argc > 2 )
+	{
+		stringstream tmp( argv[ 2 ] );
+		tmp >> tau;
+	}
+	cout << "Tau is: " << tau << "\n";
+	//}}}
 
+	ParticleSystem mPS( fileName );
 	if( mPS.getSize() < 1 )
 	{
 		cout << "No particles in file\n";
@@ -85,6 +100,7 @@ int main( int argc, char** argv )
 	}
 	//}}}
 	Quadtree mQT( l, r, b, t, NULL );
+	mQT.setTau( tau );
 	cout << "[" << mQT.getLeft() << ", " << mQT.getRight() << "] ["
 		<< mQT.getBottom() << ", " << mQT.getTop() << "]\n";
 
@@ -92,7 +108,6 @@ int main( int argc, char** argv )
 	{
 		mQT.add( mPS.getParticle( i ) );
 	}
-	cout << "Yay! We didn't crash\n";
 
 	cout << "Runnnig Barnes-Hut on all particles\n";
 	for( unsigned int i = 0; i < mPS.getSize(); i++ )
@@ -106,8 +121,7 @@ int main( int argc, char** argv )
 	cout << "Saving results\n";
 	mPS.save( outputName );
 
-	cout << "Quiting\n";
-
+	cout << "Exiting cleanly\n";
 	return 0;
 }
 
