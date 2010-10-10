@@ -28,16 +28,69 @@ using std::string;
 #include <sstream>
 using std::stringstream;
 
-#include <SFML/Graphics.hpp>
-using namespace sf;
-
 #include "particle_system.hpp"
 #include "quadtree.hpp"
 
 static const long double QUAD_LEEWAY = 0.00000000000001;
 
+#ifdef GUI
+//{{{
+#include <SFML/Graphics.hpp>
+using namespace sf;
+
 void drawParticleSystem( ParticleSystem* toDraw, RenderWindow& target );
-void drawQuadtree( Quadtree* toDraw, RenderWindow &target, unsigned int depth = 0 );
+void drawParticleSystem( ParticleSystem* toDraw, RenderWindow& target )
+{ //{{{
+	if( toDraw == NULL )
+		return;
+
+	long double r = toDraw->getRight(), l = toDraw->getLeft();
+	float radius = (r - l) / target.GetWidth() * 3.0;
+
+	Particle* tp;
+	for( unsigned int i = 0; i < toDraw->getSize(); i++ )
+	{
+		tp = toDraw->getParticle( i );
+		target.Draw( Shape::Circle( tp->x, tp->y, radius, Color::Black ) );
+	}
+} //}}}
+
+void drawQuadtree( Quadtree* toDraw, RenderWindow& target, unsigned int depth = 0 );
+void drawQuadtree( Quadtree* toDraw, RenderWindow& target, unsigned int depth )
+{ //{{{
+	if( toDraw == NULL )
+		return;
+
+	static const Color DEPTH_COLOR[3] = { Color::Red, Color::Black, Color::Blue };
+	// Red Green Blue
+	// Yellow Magenta Cyan
+	Color color( DEPTH_COLOR[ depth % 3 ] );
+	float thickness = 0.005;
+
+	long double l = toDraw->getLeft(), r = toDraw->getRight(),
+		  b = toDraw->getBottom(), t = toDraw->getTop();
+
+	if( depth == 0 )
+	{
+		cerr << "Drawing outer square\n";
+		target.Draw( Shape::Line( l, t, r, t, thickness, color ) );
+		target.Draw( Shape::Line( r, t, r, b, thickness, color ) );
+		target.Draw( Shape::Line( r, b, l, b, thickness, color ) );
+		target.Draw( Shape::Line( l, b, l, t, thickness, color ) );
+	}
+
+	long double mX = (l + r)/2.0, mY = (b + t)/2.0;
+	target.Draw( Shape::Line( l, mY, r, mY, thickness, color ) );
+	target.Draw( Shape::Line( mX, b, mX, t, thickness, color ) );
+
+	if( !toDraw->isParent() )
+		return;
+
+	for( unsigned int i = 0; i < 4; i++ )
+		drawQuadtree( toDraw->getChild( i ), target, depth + 1 );
+} //}}}
+//}}}
+#endif
 
 int main( int argc, char** argv )
 {
@@ -129,6 +182,8 @@ int main( int argc, char** argv )
 	cout << "Saving results\n";
 	mPS.save( outputName );
 
+#ifdef GUI
+	//{{{
 	if( argc < 5 )
 		return 0;
 
@@ -156,58 +211,10 @@ int main( int argc, char** argv )
 		window.Display();
 	}
 	// .}}}
+	//}}}
+#endif
 
 	cout << "Exiting cleanly\n";
 	return 0;
 }
-
-void drawParticleSystem( ParticleSystem* toDraw, RenderWindow& target )
-{ //{{{
-	if( toDraw == NULL )
-		return;
-
-	long double r = toDraw->getRight(), l = toDraw->getLeft();
-	float radius = (r - l) / target.GetWidth() * 3.0;
-
-	Particle* tp;
-	for( unsigned int i = 0; i < toDraw->getSize(); i++ )
-	{
-		tp = toDraw->getParticle( i );
-		target.Draw( Shape::Circle( tp->x, tp->y, radius, Color::Black ) );
-	}
-} //}}}
-
-void drawQuadtree( Quadtree* toDraw, RenderWindow& target, unsigned int depth )
-{ //{{{
-	if( toDraw == NULL )
-		return;
-
-	static const Color DEPTH_COLOR[3] = { Color::Red, Color::Black, Color::Blue };
-	// Red Green Blue
-	// Yellow Magenta Cyan
-	Color color( DEPTH_COLOR[ depth % 3 ] );
-	float thickness = 0.005;
-
-	long double l = toDraw->getLeft(), r = toDraw->getRight(),
-		  b = toDraw->getBottom(), t = toDraw->getTop();
-
-	if( depth == 0 )
-	{
-		cerr << "Drawing outer square\n";
-		target.Draw( Shape::Line( l, t, r, t, thickness, color ) );
-		target.Draw( Shape::Line( r, t, r, b, thickness, color ) );
-		target.Draw( Shape::Line( r, b, l, b, thickness, color ) );
-		target.Draw( Shape::Line( l, b, l, t, thickness, color ) );
-	}
-
-	long double mX = (l + r)/2.0, mY = (b + t)/2.0;
-	target.Draw( Shape::Line( l, mY, r, mY, thickness, color ) );
-	target.Draw( Shape::Line( mX, b, mX, t, thickness, color ) );
-
-	if( !toDraw->isParent() )
-		return;
-
-	for( unsigned int i = 0; i < 4; i++ )
-		drawQuadtree( toDraw->getChild( i ), target, depth + 1 );
-} //}}}
 
