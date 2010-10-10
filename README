@@ -7,13 +7,24 @@ Compile:
 	make
 
 Run:
-	./bin/barnes-hut [filename]
+	./bin/barnes-hut [filename] [tau]
 	If you do not specify a file containing the initial particle descriptions,
-	this program will prompt you to spceify the file on stdin.
+	this program will prompt you to spceify the file on stdin. If you do not
+	specify a tau value, 0.5 will be assumed.
+
+Input/output format:
+	Input format should be a series of lines with three floats on each line. The
+	first float will be used as the x, the next y, and the final will be mass.
+	Technically, white space doesn't matter but it looks better ;)
+
+	The output will be the same as the input, except on each line the
+	instantaneous x and y accelerations will be appended
 
 Warning:
 	I haven't done much file IO, so don't run this on something you don't want to
-	turn into a radioactive sheep-cheese.
+	turn into a radioactive sheep-cheese. (it has been tested repeatedly, and it
+	hasn't done this up to this point, still, don't run it on anything not in the
+	right format)
 
 License:
 	GPL3, see COPYING
