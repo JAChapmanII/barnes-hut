@@ -10,6 +10,7 @@ CFLAGS=
 
 LD=ld
 LFLAGS=
+LFLAGS+=-lsfml-graphics -lsfml-window -lsfml-system
 
 ifdef profile
 CFLAGS+=-pg
