@@ -123,8 +123,8 @@ void Quadtree::update( Particle* p )
 		if( fabs( this->me->m ) < EQUAL_DELTA )
 			return;
 		long double gm = p->m * this->me->m;
-		p->ax += dx * gm / d3;
-		p->ay += dy * gm / d3;
+		p->fx += dx * gm / d3;
+		p->fy += dy * gm / d3;
 		return;
 	}
 
@@ -142,8 +142,8 @@ void Quadtree::update( Particle* p )
 	else
 	{
 		long double gm = p->m * this->me->m;
-		p->ax += dx * gm / d3;
-		p->ay += dy * gm / d3;
+		p->fx += dx * gm / d3;
+		p->fy += dy * gm / d3;
 		return;
 	}
 } //}}}

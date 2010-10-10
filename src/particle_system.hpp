@@ -117,9 +117,9 @@ class ParticleSystem
 		Particle** mParticles;
 
 		Particle* minXP;
-		Particle* maxXP;
+		Particle* mfxXP;
 		Particle* minYP;
-		Particle* maxYP;
+		Particle* mfxYP;
 
 		ParticleSystem( const ParticleSystem& right );
 		ParticleSystem& operator=( const ParticleSystem& right );

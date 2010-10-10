@@ -18,7 +18,7 @@ Input/output format:
 	Technically, white space doesn't matter but it looks better ;)
 
 	The output will be the same as the input, except on each line the
-	instantaneous x and y accelerations will be appended
+	instantaneous x and y forces will be appended
 
 Warning:
 	I haven't done much file IO, so don't run this on something you don't want to

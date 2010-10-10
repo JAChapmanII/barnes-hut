@@ -34,14 +34,14 @@ class Particle
 	public:
 		long double x, y;
 		long double m;
-		long double ax, ay;
+		long double fx, fy;
 
 		Particle() :
 			x(0),
 			y(0),
 			m(0),
-			ax(0),
-			ay(0)
+			fx(0),
+			fy(0)
 		{
 		}
 
@@ -49,8 +49,8 @@ class Particle
 			x( iX ),
 			y( iY ),
 			m( iM ),
-			ax(0),
-			ay(0)
+			fx(0),
+			fy(0)
 		{
 		}
 
@@ -65,8 +65,8 @@ class Particle
 			out << "<"
 				<< fixed << setprecision( 4 ) << setw( 8 ) << toPrint.x << ", "
 				<< fixed << setprecision( 4 ) << setw( 8 ) << toPrint.y << "> ["
-				<< fixed << setprecision( 4 ) << setw( 8 ) << toPrint.ax << ", "
-				<< fixed << setprecision( 4 ) << setw( 8 ) << toPrint.ay << "] "
+				<< fixed << setprecision( 4 ) << setw( 8 ) << toPrint.fx << ", "
+				<< fixed << setprecision( 4 ) << setw( 8 ) << toPrint.fy << "] "
 				<< fixed << setprecision( 4 ) << setw( 8 ) << toPrint.m;
 		}
 };

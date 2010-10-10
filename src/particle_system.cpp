@@ -38,9 +38,9 @@ ParticleSystem::ParticleSystem() :
 	mSize( 0 ), //{{{
 	mParticles( NULL ),
 	minXP( NULL ),
-	maxXP( NULL ),
+	mfxXP( NULL ),
 	minYP( NULL ),
-	maxYP( NULL )
+	mfxYP( NULL )
 {
 } //}}}
 
@@ -48,9 +48,9 @@ ParticleSystem::ParticleSystem( string fileName ) :
 	mSize( 0 ), //{{{
 	mParticles( NULL ),
 	minXP( NULL ),
-	maxXP( NULL ),
+	mfxXP( NULL ),
 	minYP( NULL ),
-	maxYP( NULL )
+	mfxYP( NULL )
 {
 	this->load( fileName );
 } //}}}
@@ -100,12 +100,12 @@ void ParticleSystem::load( string fileName )
 
 		if((this->minXP == NULL) || ( this->mParticles[ l ]->x < this->minXP->x ))
 			this->minXP = this->mParticles[ l ];
-		if((this->maxXP == NULL) || ( this->mParticles[ l ]->x > this->maxXP->x ))
-			this->maxXP = this->mParticles[ l ];
+		if((this->mfxXP == NULL) || ( this->mParticles[ l ]->x > this->mfxXP->x ))
+			this->mfxXP = this->mParticles[ l ];
 		if((this->minYP == NULL) || ( this->mParticles[ l ]->y < this->minYP->y ))
 			this->minYP = this->mParticles[ l ];
-		if((this->maxYP == NULL) || ( this->mParticles[ l ]->y > this->maxYP->y ))
-			this->maxYP = this->mParticles[ l ];
+		if((this->mfxYP == NULL) || ( this->mParticles[ l ]->y > this->mfxYP->y ))
+			this->mfxYP = this->mParticles[ l ];
 	}
 
 	file.close();
@@ -126,8 +126,8 @@ void ParticleSystem::save( string fileName )
 			<< fixed << setprecision( 4 ) << setw( 8 ) << this->mParticles[ i ]->x << "\t"
 			<< fixed << setprecision( 4 ) << setw( 8 ) << this->mParticles[ i ]->y << "\t"
 			<< fixed << setprecision( 4 ) << setw( 8 ) << this->mParticles[ i ]->m << "\t"
-			<< fixed << setprecision( 4 ) << setw( 8 ) << this->mParticles[ i ]->ax << "\t"
-			<< fixed << setprecision( 4 ) << setw( 8 ) << this->mParticles[ i ]->ay << "\n";
+			<< fixed << setprecision( 4 ) << setw( 8 ) << this->mParticles[ i ]->fx << "\t"
+			<< fixed << setprecision( 4 ) << setw( 8 ) << this->mParticles[ i ]->fy << "\n";
 	}
 
 	file.close();
@@ -142,9 +142,9 @@ void ParticleSystem::clear()
 	delete[] this->mParticles;
 	this->mParticles = NULL;
 	this->minXP = NULL;
-	this->maxXP = NULL;
+	this->mfxXP = NULL;
 	this->minYP = NULL;
-	this->maxYP = NULL;
+	this->mfxYP = NULL;
 	this->mSize = 0;
 } //}}}
 
@@ -181,7 +181,7 @@ long double ParticleSystem::getLeft() const
 
 long double ParticleSystem::getRight() const
 { //{{{
-	return this->maxXP->x;
+	return this->mfxXP->x;
 } //}}}
 
 long double ParticleSystem::getBottom() const
@@ -191,6 +191,6 @@ long double ParticleSystem::getBottom() const
 
 long double ParticleSystem::getTop() const
 { //{{{
-	return this->maxYP->y;
+	return this->mfxYP->y;
 } //}}}
 
