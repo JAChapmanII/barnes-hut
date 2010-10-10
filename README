@@ -4,13 +4,26 @@ for when I try to do something similar (unless this works out to be what I was
 thinking the fast multipole method was) in Universum Meum.
 
 Compile:
-	make
+	To compile without SFML GUI:
+		make
+	To compile with SFML GUI:
+		make gui=yes
+
+	To switch between GUI/non GUI versions you must
+		make clean between them
+	It is possible to run the GUI compiled version without opening any windows
 
 Run:
-	./bin/barnes-hut [filename] [tau]
+	./bin/barnes-hut [filename] [tau] [arg4] [arg5]
 	If you do not specify a file containing the initial particle descriptions,
 	this program will prompt you to spceify the file on stdin. If you do not
 	specify a tau value, 0.5 will be assumed.
+
+	arg4 is a special arg that makes the program print the particle system after
+	running the Barnes-Hut algorithm to stdout
+
+	arg5 is a special arg that makes the program display the quadtree after
+	running the Barnes-Hut algorithm if it was compiled with gui=yes
 
 Input/output format:
 	Input format should be a series of lines with three floats on each line. The
