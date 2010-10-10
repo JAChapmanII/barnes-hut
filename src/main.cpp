@@ -31,7 +31,7 @@ using std::stringstream;
 #include "particle_system.hpp"
 #include "quadtree.hpp"
 
-static const long double QUAD_LEEWAY = 0.0000000001;
+static const long double QUAD_LEEWAY = 0.00000000000001;
 
 int main( int argc, char** argv )
 {
@@ -81,22 +81,21 @@ int main( int argc, char** argv )
 
 	cout << "Putting all particles into Quadtree, let's see if we SIGSEGV\n";
 	// Figure out the sides of the Quadtree {{{
-	long double l = 0, r = 0, b = 0, t = 0;
+	long double l = mPS.getLeft() - QUAD_LEEWAY,
+		r = mPS.getRight() + QUAD_LEEWAY,
+		b = mPS.getBottom() - QUAD_LEEWAY,
+		t = mPS.getTop() + QUAD_LEEWAY;
 	long double w = mPS.getRight() - mPS.getLeft();
 	long double h = mPS.getTop() - mPS.getBottom();
 	if( w > h )
 	{
-		l = mPS.getLeft() - QUAD_LEEWAY;
-		r = mPS.getRight() + QUAD_LEEWAY;
-		b = mPS.getBottom() - QUAD_LEEWAY - (w - h)/2.0;
-		t = mPS.getTop() + QUAD_LEEWAY + (w - h)/2.0;
+		b -= (w - h)/2.0;
+		t += (w - h)/2.0;
 	}
-	else
+	else if( h > w )
 	{
-		b = mPS.getBottom() - QUAD_LEEWAY;
-		t = mPS.getTop() + QUAD_LEEWAY;
-		l = mPS.getLeft() - QUAD_LEEWAY - (h - w)/2.0;
-		r = mPS.getRight() + QUAD_LEEWAY + (h - w)/2.0;
+		l -= (h - w)/2.0;
+		r += (h - w)/2.0;
 	}
 	//}}}
 	Quadtree mQT( l, r, b, t, NULL );
