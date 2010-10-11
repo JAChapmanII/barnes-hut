@@ -92,6 +92,9 @@ void drawQuadtree( Quadtree* toDraw, RenderWindow& target, unsigned int depth )
 //}}}
 #endif
 
+void printDimensions( ParticleSystem &ps );
+void printDimensions( Quadtree &qt );
+
 int main( int argc, char** argv )
 {
 	// Print args {{{
@@ -135,8 +138,7 @@ int main( int argc, char** argv )
 		cout << "No particles in file\n";
 		return 0;
 	}
-	cout << "mPS: [" << mPS.getLeft() << ", " << mPS.getRight() << "] ["
-		<< mPS.getBottom() << ", " << mPS.getTop() << "]\n";
+	printDimensions( mPS );
 
 	cout << "Putting all particles into Quadtree, let's see if we SIGSEGV\n";
 	// Figure out the sides of the Quadtree {{{
@@ -159,25 +161,14 @@ int main( int argc, char** argv )
 	//}}}
 	Quadtree mQT( l, r, b, t, NULL );
 	mQT.setTau( tau );
-	cout << "\t[" << mQT.getLeft() << ", " << mQT.getRight() << "] ["
-		<< mQT.getBottom() << ", " << mQT.getTop() << "]\n";
-
-	for( unsigned int i = 0; i < mPS.getSize(); i++ )
-	{
-		mQT.add( mPS.getParticle( i ) );
-	}
+	printDimensions( mQT );
 
 	cout << "Runnnig Barnes-Hut on all particles\n";
 	for( unsigned int i = 0; i < mPS.getSize(); i++ )
-	{
 		mQT.update( mPS.getParticle( i ) );
-	}
 
 	if( argc > 3 )
-	{
-		cout << "Outputting results\n";
 		cout << mPS << '\n';
-	}
 
 	cout << "Saving results\n";
 	mPS.save( outputName );
@@ -210,11 +201,23 @@ int main( int argc, char** argv )
 
 		window.Display();
 	}
-	// .}}}
+	// }}}
 	//}}}
 #endif
 
 	cout << "Exiting cleanly\n";
 	return 0;
 }
+
+void printDimensions( ParticleSystem &ps )
+{ //{{{
+	cout << "\t[" << ps.getLeft() << ", " << ps.getRight() << "] ["
+		<< ps.getBottom() << ", " << ps.getTop() << "]\n";
+} //}}}
+
+void printDimensions( Quadtree &qt )
+{ //{{{
+	cout << "\t[" << qt.getLeft() << ", " << qt.getRight() << "] ["
+		<< qt.getBottom() << ", " << qt.getTop() << "]\n";
+} //}}}
 
