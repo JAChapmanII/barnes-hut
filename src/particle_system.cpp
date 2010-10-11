@@ -63,6 +63,17 @@ ParticleSystem::ParticleSystem( const ParticleSystem& rhs ) :
 	minYP( NULL ),
 	mfxYP( NULL )
 {
+	(*this) = rhs;
+} //}}}
+
+ParticleSystem::~ParticleSystem()
+{ //{{{
+	this->clear();
+} //}}}
+
+ParticleSystem& ParticleSystem::operator=( const ParticleSystem& rhs )
+{ //{{{
+	this->clear();
 	this->mParticles = new Particle*[ this->mSize ];
 	for( unsigned int i = 0; i < this->mSize; i++ )
 	{
@@ -79,11 +90,6 @@ ParticleSystem::ParticleSystem( const ParticleSystem& rhs ) :
 		if((this->mfxYP == NULL) || ( this->mParticles[ i ]->y > this->mfxYP->y ))
 			this->mfxYP = this->mParticles[ i ];
 	}
-} //}}}
-
-ParticleSystem::~ParticleSystem()
-{ //{{{
-	this->clear();
 } //}}}
 
 void ParticleSystem::load( string fileName, bool hasForces )

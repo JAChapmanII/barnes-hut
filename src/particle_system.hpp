@@ -57,6 +57,12 @@ class ParticleSystem
 		~ParticleSystem();
 
 		/**
+		 * Copy another particle system into this one, deep.
+		 * @param rhs : other particle system
+		 */
+		ParticleSystem& operator=( const ParticleSystem& rhs );
+
+		/**
 		 * Load a file into this system, trashing existing particles.
 		 * @param fileName : filename to load from
 		 * @param hasForces : true if there are forces in the file
@@ -134,8 +140,6 @@ class ParticleSystem
 		Particle* mfxXP;
 		Particle* minYP;
 		Particle* mfxYP;
-
-		ParticleSystem& operator=( const ParticleSystem& rhs );
 };
 
 #endif // PARTICLE_SYSTEM_HPP
