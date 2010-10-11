@@ -34,6 +34,8 @@ using std::vector;
 #include <limits>
 using std::numeric_limits;
 
+#include <cmath>
+
 #include "particle_system.hpp"
 #include "quadtree.hpp"
 
@@ -55,7 +57,9 @@ void drawParticleSystem( ParticleSystem* toDraw, RenderWindow& target )
 	for( unsigned int i = 0; i < toDraw->getSize(); i++ )
 	{
 		tp = toDraw->getParticle( i );
-		target.Draw( Shape::Circle( tp->x, tp->y, radius, Color::Black ) );
+		target.Draw( Shape::Circle( tp->x, tp->y, radius,
+			((tp->m < 0) ? Color::Red : Color::Blue )
+					) );
 	}
 } //}}}
 
@@ -69,6 +73,7 @@ void drawQuadtree( Quadtree* toDraw, RenderWindow& target, unsigned int depth )
 	// Red Green Blue
 	// Yellow Magenta Cyan
 	Color color( DEPTH_COLOR[ depth % 3 ] );
+	color = Color::Black;
 	float thickness = 0.005;
 
 	long double l = toDraw->getLeft(), r = toDraw->getRight(),
@@ -76,11 +81,20 @@ void drawQuadtree( Quadtree* toDraw, RenderWindow& target, unsigned int depth )
 
 	if( depth == 0 )
 	{
-		cerr << "Drawing outer square\n";
 		target.Draw( Shape::Line( l, t, r, t, thickness, color ) );
 		target.Draw( Shape::Line( r, t, r, b, thickness, color ) );
 		target.Draw( Shape::Line( r, b, l, b, thickness, color ) );
 		target.Draw( Shape::Line( l, b, l, t, thickness, color ) );
+	}
+	if(( toDraw->getMe() != NULL ) &&
+		( fabs( toDraw->getMe()->m ) < numeric_limits<long double>::epsilon() ))
+	{
+		Color bcolor( Color::Magenta );
+		float zthick = 0.01;
+		target.Draw( Shape::Line( l, t, r, t, zthick, bcolor ) );
+		target.Draw( Shape::Line( r, t, r, b, zthick, bcolor ) );
+		target.Draw( Shape::Line( r, b, l, b, zthick, bcolor ) );
+		target.Draw( Shape::Line( l, b, l, t, zthick, bcolor ) );
 	}
 
 	long double mX = (l + r)/2.0, mY = (b + t)/2.0;
