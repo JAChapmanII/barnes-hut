@@ -56,7 +56,7 @@ ParticleSystem::ParticleSystem( string fileName, bool hasForces ) :
 } //}}}
 
 ParticleSystem::ParticleSystem( const ParticleSystem& rhs ) :
-	mSize( rhs.mSize ), //{{{
+	mSize( 0 ), //{{{
 	mParticles( NULL ),
 	minXP( NULL ),
 	mfxXP( NULL ),
@@ -74,6 +74,7 @@ ParticleSystem::~ParticleSystem()
 ParticleSystem& ParticleSystem::operator=( const ParticleSystem& rhs )
 { //{{{
 	this->clear();
+	this->mSize = rhs.mSize;
 	this->mParticles = new Particle*[ this->mSize ];
 	for( unsigned int i = 0; i < this->mSize; i++ )
 	{
@@ -172,6 +173,9 @@ void ParticleSystem::save( string fileName )
 
 void ParticleSystem::clear()
 { //{{{
+	if( this->mSize < 1 )
+		return;
+
 	for( unsigned int i = 0; i < this->mSize; i++ )
 	{
 		delete[] this->mParticles[ i ];
