@@ -26,11 +26,12 @@ using std::cerr;
 #include <algorithm>
 using std::swap;
 
+#include <limits>
+using std::numeric_limits;
+
 #include <cmath>
 
 static const unsigned int NOT_A_QUADRANT = 5;
-static const long double EQUAL_DELTA = 0.0000000001;
-static const long double QUAD_LEEWAY = 0.00000000000001;
 
 Quadtree::Quadtree(long double iL, long double iR, long double iT, long double iB, Particle* iMe) :
 	left( iL ), //{{{
@@ -59,10 +60,10 @@ Quadtree::Quadtree( ParticleSystem &rhs ) :
 	mChildren( NULL )
 {
 	// Figure out the sides of the Quadtree {{{
-	this->left = rhs.getLeft() - QUAD_LEEWAY;
-	this->right = rhs.getRight() + QUAD_LEEWAY;
-	this->bottom = rhs.getBottom() - QUAD_LEEWAY;
-	this->top = rhs.getTop() + QUAD_LEEWAY;
+	this->left = rhs.getLeft() - numeric_limits<long double>::epsilon();
+	this->right = rhs.getRight() + numeric_limits<long double>::epsilon();
+	this->bottom = rhs.getBottom() - numeric_limits<long double>::epsilon();
+	this->top = rhs.getTop() + numeric_limits<long double>::epsilon();
 
 	long double w = this->right - this->left;
 	long double h = this->top - this->bottom;
@@ -151,7 +152,7 @@ void Quadtree::update( Particle* p )
 
 	if( !this->parent )
 	{
-		if( fabs( this->me->m ) < EQUAL_DELTA )
+		if( fabs( this->me->m ) < numeric_limits<long double>::epsilon() )
 			return;
 		long double gm = p->m * this->me->m;
 		p->fx += dx * gm / d3;
@@ -160,7 +161,7 @@ void Quadtree::update( Particle* p )
 	}
 
 	long double s = this->right - this->left;
-	if(( fabs( this->me->m ) < EQUAL_DELTA ) ||
+	if(( fabs( this->me->m ) < numeric_limits<long double>::epsilon() ) ||
 		( (s / d) >= this->tau ) ||
 		( this->getQuadrant( p ) != NOT_A_QUADRANT ))
 	{
@@ -196,7 +197,7 @@ void Quadtree::recalculateMe()
 			this->me->m += this->mChildren[ i ]->getMe()->m;
 	}
 
-	if( fabs( this->me->m ) < EQUAL_DELTA )
+	if( fabs( this->me->m ) < numeric_limits<long double>::epsilon() )
 		return;
 
 	Particle* tChild = NULL;
