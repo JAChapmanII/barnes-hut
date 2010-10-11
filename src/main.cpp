@@ -243,35 +243,41 @@ void testRMSE( string fileName, string outName, long double tau, int argc )
 	cout << "Bruteforce calculation has been done\n";
 
 	const long double TAU_DELTA = 0.0001;
-	cout << "Stepping through tau up to " << tau << " by " << TAU_DELTA << "\n";
+	unsigned int totalSteps = (int)(tau / TAU_DELTA);
+	cout << "Stepping through tau up to " << tau
+		<< " by " << TAU_DELTA << " with a total of " << totalSteps << " steps\n";
 
-	long double ** RMSE = new long double*[ (int)(tau / TAU_DELTA) ];
-	ParticleSystem* ps = NULL;
-	Quadtree* qt = NULL;
+	long double ** RMSE = new long double*[ totalSteps ];
+	ParticleSystem ps( bruteForce );
+	Quadtree qt( ps );
 	for( long double ctau = TAU_DELTA; ctau <= tau; ctau += TAU_DELTA )
 	{
-		ps = new ParticleSystem( bruteForce );
-		qt = new Quadtree( *ps );
-		qt->setTau( ctau );
-		cout << ctau << "\t";
-
-		for( unsigned int i = 0; i < ps->getSize(); i++ )
-			qt->update( ps->getParticle( i ) );
-
 		stringstream tmp;
 		tmp << outName << "_" << ctau;
-		ps->save( tmp.str() );
 
-		RMSE[ (int)(ctau / TAU_DELTA) ] = calculateRMSE( &bruteForce, ps );
+		ps.load( tmp.str(), true );
+		if( ps.getSize() != bruteForce.getSize() )
+			ps = bruteForce;
+		ps.zeroForces();
+
+		qt.setTau( ctau );
+		cout << ctau << "\t";
+
+		for( unsigned int i = 0; i < ps.getSize(); i++ )
+			qt.update( ps.getParticle( i ) );
+
+		ps.save( tmp.str() );
+
+		RMSE[ (int)(ctau / TAU_DELTA) ] = calculateRMSE( &bruteForce, &ps );
 	}
 	cout << "\nDone\n";
 
 	cout << "Outputting all RMSE values:\n";
-	for( unsigned int i = 1; i < tau / TAU_DELTA; i++ )
+	for( unsigned int i = 1; i < totalSteps; i++ )
 		cout << RMSE[ i ][ 0 ] << "\t" << RMSE[ i ][ 1 ] << "\n";
 
 	bool monotonicIncreasingX = true, monotonicIncreasingY = true;
-	for( unsigned int i = 2; i < tau / TAU_DELTA; i++ )
+	for( unsigned int i = 2; i < totalSteps; i++ )
 	{
 		if( RMSE[ i ][ 0 ] < RMSE[ i - 1 ][ 0 ] )
 			monotonicIncreasingX = false;
@@ -284,6 +290,7 @@ void testRMSE( string fileName, string outName, long double tau, int argc )
 	if( !monotonicIncreasingY )
 		cerr << "Y RMSE is not monotonic increasing\n";
 
+	cout << "Outputted results\n";
 } //}}}
 
 long double* calculateRMSE( ParticleSystem* bf, ParticleSystem* ps )
