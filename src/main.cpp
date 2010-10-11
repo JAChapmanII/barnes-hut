@@ -44,6 +44,19 @@ using std::numeric_limits;
 #include <SFML/Graphics.hpp>
 using namespace sf;
 
+void drawRectangle( RenderWindow &target,
+		float left, float bottom, float right, float top,
+		float thickness = 0.005, Color color = Color::Magenta );
+void drawRectangle( RenderWindow &target,
+		float left, float bottom, float right, float top,
+		float thickness = 0.005, Color color = Color::Magenta )
+{
+	target.Draw( Shape::Line( left, top, right, top, thickness, color ) );
+	target.Draw( Shape::Line( right, top, right, bottom, thickness, color ) );
+	target.Draw( Shape::Line( right, bottom, left, bottom, thickness, color ) );
+	target.Draw( Shape::Line( left, bottom, left, top, thickness, color ) );
+}
+
 void drawParticleSystem( ParticleSystem* toDraw, RenderWindow& target );
 void drawParticleSystem( ParticleSystem* toDraw, RenderWindow& target )
 { //{{{
@@ -69,33 +82,20 @@ void drawQuadtree( Quadtree* toDraw, RenderWindow& target, unsigned int depth )
 	if( toDraw == NULL )
 		return;
 
-	static const Color DEPTH_COLOR[3] = { Color::Red, Color::Black, Color::Blue };
-	// Red Green Blue
-	// Yellow Magenta Cyan
-	Color color( DEPTH_COLOR[ depth % 3 ] );
-	color = Color::Black;
+	Color color( Color::Black );
 	float thickness = 0.005;
 
 	long double l = toDraw->getLeft(), r = toDraw->getRight(),
 		  b = toDraw->getBottom(), t = toDraw->getTop();
 
+	// if this is the root node, draw a border around everything
 	if( depth == 0 )
-	{
-		target.Draw( Shape::Line( l, t, r, t, thickness, color ) );
-		target.Draw( Shape::Line( r, t, r, b, thickness, color ) );
-		target.Draw( Shape::Line( r, b, l, b, thickness, color ) );
-		target.Draw( Shape::Line( l, b, l, t, thickness, color ) );
-	}
+		drawRectangle( target, l, b, r, t, thickness, color );
+
+	float zthick = 0.005; // if this is zero-sum cell, draw a magenta border
 	if(( toDraw->getMe() != NULL ) &&
 		( fabs( toDraw->getMe()->m ) < numeric_limits<long double>::epsilon() ))
-	{
-		Color bcolor( Color::Magenta );
-		float zthick = 0.01;
-		target.Draw( Shape::Line( l, t, r, t, zthick, bcolor ) );
-		target.Draw( Shape::Line( r, t, r, b, zthick, bcolor ) );
-		target.Draw( Shape::Line( r, b, l, b, zthick, bcolor ) );
-		target.Draw( Shape::Line( l, b, l, t, zthick, bcolor ) );
-	}
+		drawRectangle( target, l, b, r, t, zthick );
 
 	long double mX = (l + r)/2.0, mY = (b + t)/2.0;
 	target.Draw( Shape::Line( l, mY, r, mY, thickness, color ) );
