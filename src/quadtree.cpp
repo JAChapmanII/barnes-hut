@@ -30,6 +30,7 @@ using std::swap;
 
 static const unsigned int NOT_A_QUADRANT = 5;
 static const long double EQUAL_DELTA = 0.0000000001;
+static const long double QUAD_LEEWAY = 0.00000000000001;
 
 Quadtree::Quadtree(long double iL, long double iR, long double iT, long double iB, Particle* iMe) :
 	left( iL ), //{{{
@@ -45,6 +46,39 @@ Quadtree::Quadtree(long double iL, long double iR, long double iT, long double i
 		swap( this->left, this->right );
 	if( this->bottom > this->top )
 		swap( this->bottom, this->top );
+} //}}}
+
+Quadtree( ParticleSystem &rhs ) :
+	left( 0 ), //{{{
+	right( 0 ),
+	top( 0 ),
+	bottom( 0 ),
+	tau( 0.5 ),
+	parent( false ),
+	me( NULL ),
+	mChildren( NULL )
+{
+	// Figure out the sides of the Quadtree {{{
+	this->left = rhs.getLeft() - QUAD_LEEWAY;
+	this->right = rhs.getRight() + QUAD_LEEWAY;
+	this->bottom = rhs.getBottom() - QUAD_LEEWAY;
+	this->top = rhs.getTop() + QUAD_LEEWAY;
+
+	long double w = this->right - this->left;
+	long double h = this->top - this->bottom;
+	if( w > h )
+	{
+		this->bottom -= (w - h)/2.0;
+		this->top += (w - h)/2.0;
+	}
+	else if( h > w )
+	{
+		this->left -= (h - w)/2.0;
+		this->right += (h - w)/2.0;
+	} //}}}
+
+	for( unsigned int i = 0; i < rhs.getSize(); i++ )
+		this->add( rhs.getParticle( i ) );
 } //}}}
 
 Quadtree::~Quadtree()

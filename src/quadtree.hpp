@@ -20,7 +20,7 @@
 #ifndef QUADTREE_HPP
 #define QUADTREE_HPP
 
-#include "particle.cpp"
+#include "particle_system.hpp"
 
 /**
  * Class representing a recursive space division into four quadrants.
@@ -37,7 +37,14 @@ class Quadtree
 		 * @param iMe : initial point to contain
 		 * @note : iMe should only be NULL for empty nodes
 		 */
-		Quadtree(long double iL, long double iR, long double iT, long double iB, Particle* iMe);
+		Quadtree( long double iL, long double iR,
+				long double iT, long double iB, Particle* iMe );
+
+		/**
+		 * Create a quadtree based on a particle system.
+		 * @param ps : ParticleSystem to base this off of
+		 */
+		Quadtree( ParticleSystem &rhs );
 
 		/**
 		 * Proper deconstructor that delets all associated memory.
@@ -145,8 +152,8 @@ class Quadtree
 		Particle* me;
 		Quadtree** mChildren;
 
-		Quadtree( const Quadtree& right );
-		Quadtree &operator=( const Quadtree& right );
+		Quadtree( const Quadtree& rhs );
+		Quadtree &operator=( const Quadtree& rhs );
 };
 
 #endif // QUADTREE_HPP
