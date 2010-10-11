@@ -181,10 +181,11 @@ void simulate( string fileName, string outName, long double tau, int argc )
 #ifdef GUI
 	//{{{
 	if( argc < 5 )
-		return 0;
+		return;
 
 	RenderWindow window( VideoMode( 1000, 1000 ), "B-H", Style::Close );
-	View view( FloatRect( l, b, r, t ) );
+	View view( FloatRect( mQT.getLeft(), mQT.getBottom(),
+				mQT.getRight(), mQT.getTop() ) );
 	window.SetView( view );
 	window.SetFramerateLimit( 30 );
 	window.Clear( Color::White );
