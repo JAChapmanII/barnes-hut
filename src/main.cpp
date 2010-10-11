@@ -90,22 +90,22 @@ void drawQuadtree( Quadtree* toDraw, RenderWindow& target, unsigned int depth )
 //}}}
 #endif
 
-void testRMSE( string fileName, long double tau, int argc );
-void simulate( stirng fileName, long double tau, int argc );
+void testRMSE( string fileName, string outName, long double tau, int argc );
+void simulate( string fileName, string outName, long double tau, int argc );
 
 void printDimensions( ParticleSystem &ps );
 void printDimensions( Quadtree &qt );
 
 int main( int argc, char** argv )
 {
-	// Print args, determine testRMSE {{{
-	bool testRMSE = false;
+	// Print args, determine doTest {{{
+	bool doTest = false;
 	cout << "Arguments:\n";
 	for( int i = 0; i < argc; i++ )
 	{
 		cout << "   " << i << ": " << argv[i] << '\n';
 		if( (string)argv[i] == "-t" )
-			testRMSE = true;
+			doTest = true;
 	}
 	//}}}
 
@@ -136,16 +136,16 @@ int main( int argc, char** argv )
 	cout << "Tau is: " << tau << "\n";
 	//}}}
 
-	if( testRMSE )
-		testRMSE( fileName, tau );
+	if( doTest )
+		testRMSE( fileName, outputName, tau, argc );
 	else
-		simulate( fileName, tau );
+		simulate( fileName, outputName, tau, argc );
 
 	cout << "Exiting cleanly\n";
 	return 0;
 }
 
-void simulate( stirng fileName, long double tau, int argc )
+void simulate( string fileName, string outName, long double tau, int argc )
 { //{{{
 	ParticleSystem mPS( fileName );
 	if( mPS.getSize() < 1 )
@@ -168,7 +168,7 @@ void simulate( stirng fileName, long double tau, int argc )
 		cout << mPS << '\n';
 
 	cout << "Saving results\n";
-	mPS.save( outputName );
+	mPS.save( outName );
 
 #ifdef GUI
 	//{{{
@@ -204,7 +204,7 @@ void simulate( stirng fileName, long double tau, int argc )
 
 } //}}}
 
-void testRMSE( string fileName, long double tau, int argc )
+void testRMSE( string fileName, string outName, long double tau, int argc )
 { //{{{
 	return;
 

@@ -48,7 +48,7 @@ Quadtree::Quadtree(long double iL, long double iR, long double iT, long double i
 		swap( this->bottom, this->top );
 } //}}}
 
-Quadtree( ParticleSystem &rhs ) :
+Quadtree::Quadtree( ParticleSystem &rhs ) :
 	left( 0 ), //{{{
 	right( 0 ),
 	top( 0 ),

@@ -55,7 +55,7 @@ ParticleSystem::ParticleSystem( string fileName ) :
 	this->load( fileName );
 } //}}}
 
-ParticleSystem( const ParticleSystem& rhs ) :
+ParticleSystem::ParticleSystem( const ParticleSystem& rhs ) :
 	mSize( rhs.mSize ), //{{{
 	mParticles( NULL ),
 	minXP( NULL ),
