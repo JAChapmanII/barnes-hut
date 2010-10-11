@@ -226,11 +226,17 @@ void simulate( string fileName, string outName, long double tau, int argc )
 
 void testRMSE( string fileName, string outName, long double tau, int argc )
 { //{{{
-	ParticleSystem bruteForce( fileName );
+	ParticleSystem bruteForce( outName, true );
+	bool fromSave = true;
 	if( bruteForce.getSize() < 1 )
 	{
-		cout << "No particles in file\n";
-		return;
+		fromSave = false;
+		bruteForce.load( fileName );
+		if( bruteForce.getSize() < 1 )
+		{
+			cout << "No particles in file\n";
+			return;
+		}
 	}
 	printDimensions( bruteForce );
 
@@ -238,9 +244,17 @@ void testRMSE( string fileName, string outName, long double tau, int argc )
 	Quadtree bfTree( bruteForce );
 	bfTree.setTau( 0 );
 
-	for( unsigned int i = 0; i < bruteForce.getSize(); i++ )
-		bfTree.update( bruteForce.getParticle( i ) );
-	cout << "Bruteforce calculation has been done\n";
+	if( fromSave )
+	{
+		cout << "Loaded brute force from file successfully\n";
+	}
+	else
+	{
+		for( unsigned int i = 0; i < bruteForce.getSize(); i++ )
+			bfTree.update( bruteForce.getParticle( i ) );
+		cout << "Bruteforce calculation has been done\n";
+		bruteForce.save( outName );
+	}
 
 	const long double TAU_DELTA = 0.0001;
 	unsigned int totalSteps = (int)(tau / TAU_DELTA);
@@ -270,6 +284,8 @@ void testRMSE( string fileName, string outName, long double tau, int argc )
 		}
 
 		RMSE[ (int)(ctau / TAU_DELTA) ] = calculateRMSE( &bruteForce, &ps );
+		cout << RMSE[ (int)(ctau / TAU_DELTA) ][ 0 ] << " "
+			<< RMSE[ (int)(ctau / TAU_DELTA ) ][ 1 ] << "\n";
 	}
 	cout << "\nDone\n";
 
