@@ -55,8 +55,8 @@ ParticleSystem::ParticleSystem( string fileName ) :
 	this->load( fileName );
 } //}}}
 
-ParticleSystem( const ParticleSystem& right ) :
-	mSize( right.mSize ), //{{{
+ParticleSystem( const ParticleSystem& rhs ) :
+	mSize( rhs.mSize ), //{{{
 	mParticles( NULL ),
 	minXP( NULL ),
 	mfxXP( NULL ),
@@ -67,8 +67,8 @@ ParticleSystem( const ParticleSystem& right ) :
 	for( unsigned int i = 0; i < this->mSize; i++ )
 	{
 		this->mParticles[ i ] = new Particle(
-			right.mParticles[ i ]->x, right.mParticles[ i ]->y,
-			right.mParticles[ i ]->m );
+			rhs.mParticles[ i ]->x, rhs.mParticles[ i ]->y,
+			rhs.mParticles[ i ]->m );
 
 		if((this->minXP == NULL) || ( this->mParticles[ i ]->x < this->minXP->x ))
 			this->minXP = this->mParticles[ i ];

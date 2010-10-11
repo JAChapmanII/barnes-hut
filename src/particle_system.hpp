@@ -46,9 +46,9 @@ class ParticleSystem
 		/**
 		 * Makes a duplicate of all particles in another system and puts them in
 		 * this system upon creation.
-		 * @param right : ParticleSystem to copy into this one
+		 * @param rhs : ParticleSystem to copy into this one
 		 */
-		ParticleSystem( const ParticleSystem& right );
+		ParticleSystem( const ParticleSystem& rhs );
 
 		/**
 		 * Deconstructor that deallocates all memory used by this.
@@ -128,7 +128,7 @@ class ParticleSystem
 		Particle* minYP;
 		Particle* mfxYP;
 
-		ParticleSystem& operator=( const ParticleSystem& right );
+		ParticleSystem& operator=( const ParticleSystem& rhs );
 };
 
 #endif // PARTICLE_SYSTEM_HPP
