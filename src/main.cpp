@@ -247,19 +247,18 @@ void testRMSE( string fileName, string outName, long double tau, int argc )
 	cout << "Stepping through tau up to " << tau
 		<< " by " << TAU_DELTA << " with a total of " << totalSteps << " steps\n";
 
-	long double ** RMSE = new long double*[ totalSteps ];
-	ParticleSystem ps( bruteForce );
-	Quadtree qt( ps );
+	long double ** RMSE = new long double*[ totalSteps + 1 ];
 	for( long double ctau = TAU_DELTA; ctau <= tau; ctau += TAU_DELTA )
 	{
 		stringstream tmp;
 		tmp << outName << "_" << ctau;
 
-		ps.load( tmp.str(), true );
+		ParticleSystem ps( tmp.str(), true );
 		if( ps.getSize() != bruteForce.getSize() )
 			ps = bruteForce;
 		ps.zeroForces();
 
+		Quadtree qt( ps );
 		qt.setTau( ctau );
 		cout << ctau << "\t";
 
