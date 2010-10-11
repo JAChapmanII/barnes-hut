@@ -67,7 +67,7 @@ class ParticleSystem
 		 * @param fileName : filename to load from
 		 * @param hasForces : true if there are forces in the file
 		 */
-		void load( std::string fileName, bool hasForces = true );
+		void load( std::string fileName, bool hasForces = false );
 
 		/**
 		 * Saves to a file.
