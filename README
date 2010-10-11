@@ -25,13 +25,15 @@ Run:
 	arg5 is a special arg that makes the program display the quadtree after
 	running the Barnes-Hut algorithm if it was compiled with gui=yes
 
+	-- THIS IS NOT SUGGESTED FOR END USERS --
 	If any argument after tau is "-t", then the program will run a test of the
-	root mean square error. THIS IS NOT SUGGESTED FOR END USERS.
+	root mean square error.
 	If you are not the typical user, I would at least put the input data in its
-	own folder, or you will be spammed with files ;) I might look into doing some
-	Boost Filesystem stuff, I don't know.
-	WARNING: This is still immature, and I know for a fact that there are a
-	number of ways to do it better.
+	own folder, or you will be spammed with files ;)
+	Currently, the system should be able to resume if you kill the program in the
+	middle. However, the error it reports for saved files is wrong currntly. I'm
+	going to fix that. Hold your horses.
+	-- THIS IS NOT SUGGESTED FOR END USERS --
 
 Input/output format:
 	Input format should be a series of lines with three floats on each line. The
@@ -53,3 +55,7 @@ License:
 Notes:
 	Pay attention to compiler warnings about using == and != on floating point
 	values if you ever make something like this!
+
+	This could be multithreaded pretty easily for large brute-force simulations.
+	I will look into getting portable threading going (never done any threading
+	before, so don't get your hopes up just yet)
