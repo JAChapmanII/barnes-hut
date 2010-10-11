@@ -44,7 +44,7 @@ ParticleSystem::ParticleSystem() :
 {
 } //}}}
 
-ParticleSystem::ParticleSystem( string fileName ) :
+ParticleSystem::ParticleSystem( string fileName, bool hasForces ) :
 	mSize( 0 ), //{{{
 	mParticles( NULL ),
 	minXP( NULL ),
@@ -52,7 +52,7 @@ ParticleSystem::ParticleSystem( string fileName ) :
 	minYP( NULL ),
 	mfxYP( NULL )
 {
-	this->load( fileName );
+	this->load( fileName, hasForces );
 } //}}}
 
 ParticleSystem::ParticleSystem( const ParticleSystem& rhs ) :
@@ -86,7 +86,7 @@ ParticleSystem::~ParticleSystem()
 	this->clear();
 } //}}}
 
-void ParticleSystem::load( string fileName )
+void ParticleSystem::load( string fileName, bool hasForces )
 { //{{{
 	ifstream file( fileName.c_str() );
 	if( !file.good() )
@@ -116,6 +116,11 @@ void ParticleSystem::load( string fileName )
 		file >> this->mParticles[ l ]->x;
 		file >> this->mParticles[ l ]->y;
 		file >> this->mParticles[ l ]->m;
+		if( hasForces )
+		{
+			file >> this->mParticles[ l ]->fx;
+			file >> this->mParticles[ l ]->fy;
+		}
 
 		if( !file.good() )
 		{

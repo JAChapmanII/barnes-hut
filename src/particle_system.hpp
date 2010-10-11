@@ -40,8 +40,9 @@ class ParticleSystem
 		/**
 		 * Construct a ParticleSystem and load particles from a file.
 		 * @param fileName : filename to load from
+		 * @param hasForces : true if there are forces in the file
 		 */
-		ParticleSystem( std::string fileName );
+		ParticleSystem( std::string fileName, bool hasForces = false );
 
 		/**
 		 * Makes a duplicate of all particles in another system and puts them in
@@ -58,8 +59,9 @@ class ParticleSystem
 		/**
 		 * Load a file into this system, trashing existing particles.
 		 * @param fileName : filename to load from
+		 * @param hasForces : true if there are forces in the file
 		 */
-		void load( std::string fileName );
+		void load( std::string fileName, bool hasForces = true );
 
 		/**
 		 * Saves to a file.
