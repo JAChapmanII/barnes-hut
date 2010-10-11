@@ -28,9 +28,6 @@ using std::string;
 #include <sstream>
 using std::stringstream;
 
-#include <vector>
-using std::vector;
-
 #include <limits>
 using std::numeric_limits;
 
@@ -49,13 +46,13 @@ void drawRectangle( RenderWindow &target,
 		float thickness = 0.005, Color color = Color::Magenta );
 void drawRectangle( RenderWindow &target,
 		float left, float bottom, float right, float top,
-		float thickness = 0.005, Color color = Color::Magenta )
-{
+		float thickness, Color color )
+{ //{{{
 	target.Draw( Shape::Line( left, top, right, top, thickness, color ) );
 	target.Draw( Shape::Line( right, top, right, bottom, thickness, color ) );
 	target.Draw( Shape::Line( right, bottom, left, bottom, thickness, color ) );
 	target.Draw( Shape::Line( left, bottom, left, top, thickness, color ) );
-}
+} //}}}
 
 void drawParticleSystem( ParticleSystem* toDraw, RenderWindow& target );
 void drawParticleSystem( ParticleSystem* toDraw, RenderWindow& target )
@@ -113,7 +110,7 @@ void drawQuadtree( Quadtree* toDraw, RenderWindow& target, unsigned int depth )
 void testRMSE( string fileName, string outName, long double tau, int argc );
 void simulate( string fileName, string outName, long double tau, int argc );
 
-long double calculateRMSE( ParticleSystem &bf, ParticleSystem &ps );
+long double* calculateRMSE( ParticleSystem* bf, ParticleSystem* ps );
 
 void printDimensions( ParticleSystem &ps );
 void printDimensions( Quadtree &qt );
@@ -247,23 +244,73 @@ void testRMSE( string fileName, string outName, long double tau, int argc )
 
 	const long double TAU_DELTA = 0.0001;
 	cout << "Stepping through tau up to " << tau << " by " << TAU_DELTA << "\n";
-	vector<long double> RMSE;
+
+	long double ** RMSE = new long double*[ (int)(tau / TAU_DELTA) ];
+	ParticleSystem* ps = NULL;
+	Quadtree* qt = NULL;
 	for( long double ctau = TAU_DELTA; ctau <= tau; ctau += TAU_DELTA )
 	{
+		ps = new ParticleSystem( bruteForce );
+		qt = new Quadtree( *ps );
+		qt->setTau( ctau );
 		cout << ctau << "\t";
-		ParticleSystem ps( bruteForce );
-		Quadtree qt( ps );
-		for( unsigned int i = 0; i < ps.getSize(); i++ )
-			qt.update( ps.getParticle( i ) );
-		RMSE.push_back( calculateRMSE( bruteForce, ps ) );
+
+		for( unsigned int i = 0; i < ps->getSize(); i++ )
+			qt->update( ps->getParticle( i ) );
+
+		stringstream tmp;
+		tmp << outName << "_" << ctau;
+		ps->save( tmp.str() );
+
+		RMSE[ (int)(ctau / TAU_DELTA) ] = calculateRMSE( &bruteForce, ps );
 	}
 	cout << "\nDone\n";
 
+	cout << "Outputting all RMSE values:\n";
+	for( unsigned int i = 1; i < tau / TAU_DELTA; i++ )
+		cout << RMSE[ i ][ 0 ] << "\t" << RMSE[ i ][ 1 ] << "\n";
+
+	bool monotonicIncreasingX = true, monotonicIncreasingY = true;
+	for( unsigned int i = 2; i < tau / TAU_DELTA; i++ )
+	{
+		if( RMSE[ i ][ 0 ] < RMSE[ i - 1 ][ 0 ] )
+			monotonicIncreasingX = false;
+		if( RMSE[ i ][ 1 ] < RMSE[ i - 1 ][ 1 ] )
+			monotonicIncreasingY = false;
+	}
+
+	if( !monotonicIncreasingX )
+		cerr << "X RMSE is not monotonic increasing\n";
+	if( !monotonicIncreasingY )
+		cerr << "Y RMSE is not monotonic increasing\n";
+
 } //}}}
 
-long double calculateRMSE( ParticleSystem &bf, ParticleSystem &ps )
+long double* calculateRMSE( ParticleSystem* bf, ParticleSystem* ps )
 {
-	return numeric_limits<long double>::infinity();
+	long double* rmse = new long double[ 2 ];
+	rmse[ 0 ] = rmse[ 1 ] = numeric_limits<long double>::infinity();
+	if( bf->getSize() != ps->getSize() )
+		return rmse;
+
+	long double fx = 0.0, fy = 0.0;
+	for( unsigned int i = 0; i < bf->getSize(); i++ )
+	{
+		long double tfx = 0.0, tfy = 0.0;
+		tfx = bf->getParticle( i )->fx - ps->getParticle( i )->fx;
+		tfx *= tfx;
+		fx += tfx;
+		tfy = bf->getParticle( i )->fy - ps->getParticle( i )->fy;
+		tfy *= tfy;
+		fy += tfy;
+	}
+	fx /= bf->getSize();
+	fy /= bf->getSize();
+
+	rmse[ 0 ] = sqrt( fx );
+	rmse[ 1 ] = sqrt( fy );
+
+	return rmse;
 }
 
 void printDimensions( ParticleSystem &ps )
