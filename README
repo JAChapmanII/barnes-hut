@@ -25,6 +25,14 @@ Run:
 	arg5 is a special arg that makes the program display the quadtree after
 	running the Barnes-Hut algorithm if it was compiled with gui=yes
 
+	If any argument after tau is "-t", then the program will run a test of the
+	root mean square error. THIS IS NOT SUGGESTED FOR END USERS.
+	If you are not the typical user, I would at least put the input data in its
+	own folder, or you will be spammed with files ;) I might look into doing some
+	Boost Filesystem stuff, I don't know.
+	WARNING: This is still immature, and I know for a fact that there are a
+	number of ways to do it better.
+
 Input/output format:
 	Input format should be a series of lines with three floats on each line. The
 	first float will be used as the x, the next y, and the final will be mass.
