@@ -252,20 +252,22 @@ void testRMSE( string fileName, string outName, long double tau, int argc )
 	{
 		stringstream tmp;
 		tmp << outName << "_" << ctau;
+		cout << ctau << "\t";
 
 		ParticleSystem ps( tmp.str(), true );
 		if( ps.getSize() != bruteForce.getSize() )
+		{
 			ps = bruteForce;
-		ps.zeroForces();
+			ps.zeroForces();
 
-		Quadtree qt( ps );
-		qt.setTau( ctau );
-		cout << ctau << "\t";
+			Quadtree qt( ps );
+			qt.setTau( ctau );
 
-		for( unsigned int i = 0; i < ps.getSize(); i++ )
-			qt.update( ps.getParticle( i ) );
+			for( unsigned int i = 0; i < ps.getSize(); i++ )
+				qt.update( ps.getParticle( i ) );
 
-		ps.save( tmp.str() );
+			ps.save( tmp.str() );
+		}
 
 		RMSE[ (int)(ctau / TAU_DELTA) ] = calculateRMSE( &bruteForce, &ps );
 	}
