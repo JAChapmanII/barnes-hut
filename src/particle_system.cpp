@@ -179,6 +179,15 @@ void ParticleSystem::clear()
 	this->mSize = 0;
 } //}}}
 
+void ParticleSystem::zeroForces()
+{ //{{{
+	for( unsigned int i = 0; i < this->mSize; i++ )
+	{
+		this->mParticles[ i ]->fx = 0;
+		this->mParticles[ i ]->fy = 0;
+	}
+} //}}}
+
 unsigned int ParticleSystem::getSize() const
 { //{{{
 	return this->mSize;

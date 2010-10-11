@@ -75,6 +75,11 @@ class ParticleSystem
 		void clear();
 
 		/**
+		 * Zeroes the forces of all particles.
+		 */
+		void zeroForces();
+
+		/**
 		 * Returns the size in particles of this system.
 		 * @return : size of this system
 		 */
