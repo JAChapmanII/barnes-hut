@@ -31,8 +31,6 @@ using std::stringstream;
 #include "particle_system.hpp"
 #include "quadtree.hpp"
 
-static const long double QUAD_LEEWAY = 0.00000000000001;
-
 #ifdef GUI
 //{{{
 #include <SFML/Graphics.hpp>
@@ -92,16 +90,22 @@ void drawQuadtree( Quadtree* toDraw, RenderWindow& target, unsigned int depth )
 //}}}
 #endif
 
+void testRMSE( string fileName, long double tau, int argc );
+void simulate( stirng fileName, long double tau, int argc );
+
 void printDimensions( ParticleSystem &ps );
 void printDimensions( Quadtree &qt );
 
 int main( int argc, char** argv )
 {
-	// Print args {{{
+	// Print args, determine testRMSE {{{
+	bool testRMSE = false;
 	cout << "Arguments:\n";
 	for( int i = 0; i < argc; i++ )
 	{
 		cout << "   " << i << ": " << argv[i] << '\n';
+		if( (string)argv[i] == "-t" )
+			testRMSE = true;
 	}
 	//}}}
 
@@ -132,34 +136,27 @@ int main( int argc, char** argv )
 	cout << "Tau is: " << tau << "\n";
 	//}}}
 
+	if( testRMSE )
+		testRMSE( fileName, tau );
+	else
+		simulate( fileName, tau );
+
+	cout << "Exiting cleanly\n";
+	return 0;
+}
+
+void simulate( stirng fileName, long double tau, int argc )
+{ //{{{
 	ParticleSystem mPS( fileName );
 	if( mPS.getSize() < 1 )
 	{
 		cout << "No particles in file\n";
-		return 0;
+		return;
 	}
 	printDimensions( mPS );
 
 	cout << "Putting all particles into Quadtree, let's see if we SIGSEGV\n";
-	// Figure out the sides of the Quadtree {{{
-	long double l = mPS.getLeft() - QUAD_LEEWAY,
-		r = mPS.getRight() + QUAD_LEEWAY,
-		b = mPS.getBottom() - QUAD_LEEWAY,
-		t = mPS.getTop() + QUAD_LEEWAY;
-	long double w = mPS.getRight() - mPS.getLeft();
-	long double h = mPS.getTop() - mPS.getBottom();
-	if( w > h )
-	{
-		b -= (w - h)/2.0;
-		t += (w - h)/2.0;
-	}
-	else if( h > w )
-	{
-		l -= (h - w)/2.0;
-		r += (h - w)/2.0;
-	}
-	//}}}
-	Quadtree mQT( l, r, b, t, NULL );
+	Quadtree mQT( mPS );
 	mQT.setTau( tau );
 	printDimensions( mQT );
 
@@ -205,9 +202,28 @@ int main( int argc, char** argv )
 	//}}}
 #endif
 
-	cout << "Exiting cleanly\n";
-	return 0;
-}
+} //}}}
+
+void testRMSE( string fileName, long double tau, int argc )
+{ //{{{
+	return;
+
+	ParticleSystem bruteForce( fileName );
+	if( bruteForce.getSize() < 1 )
+	{
+		cout << "No particles in file\n";
+		return;
+	}
+	printDimensions( bruteForce );
+
+	cout << "Creating inital quadtree and running brute force simulation\n";
+	Quadtree bfTree( bruteForce );
+	bfTree.setTau( 0 );
+
+	for( unsigned int i = 0; i < bruteForce.getSize(); i++ )
+		bfTree.update( bruteForce.getParticle( i ) );
+
+} //}}}
 
 void printDimensions( ParticleSystem &ps )
 { //{{{
