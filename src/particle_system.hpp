@@ -44,6 +44,13 @@ class ParticleSystem
 		ParticleSystem( std::string fileName );
 
 		/**
+		 * Makes a duplicate of all particles in another system and puts them in
+		 * this system upon creation.
+		 * @param right : ParticleSystem to copy into this one
+		 */
+		ParticleSystem( const ParticleSystem& right );
+
+		/**
 		 * Deconstructor that deallocates all memory used by this.
 		 */
 		~ParticleSystem();
@@ -121,7 +128,6 @@ class ParticleSystem
 		Particle* minYP;
 		Particle* mfxYP;
 
-		ParticleSystem( const ParticleSystem& right );
 		ParticleSystem& operator=( const ParticleSystem& right );
 };
 
