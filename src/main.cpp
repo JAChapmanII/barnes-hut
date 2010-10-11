@@ -28,6 +28,12 @@ using std::string;
 #include <sstream>
 using std::stringstream;
 
+#include <vector>
+using std::vector;
+
+#include <limits>
+using std::numeric_limits;
+
 #include "particle_system.hpp"
 #include "quadtree.hpp"
 
@@ -92,6 +98,8 @@ void drawQuadtree( Quadtree* toDraw, RenderWindow& target, unsigned int depth )
 
 void testRMSE( string fileName, string outName, long double tau, int argc );
 void simulate( string fileName, string outName, long double tau, int argc );
+
+long double calculateRMSE( ParticleSystem &bf, ParticleSystem &ps );
 
 void printDimensions( ParticleSystem &ps );
 void printDimensions( Quadtree &qt );
@@ -206,8 +214,6 @@ void simulate( string fileName, string outName, long double tau, int argc )
 
 void testRMSE( string fileName, string outName, long double tau, int argc )
 { //{{{
-	return;
-
 	ParticleSystem bruteForce( fileName );
 	if( bruteForce.getSize() < 1 )
 	{
@@ -222,8 +228,28 @@ void testRMSE( string fileName, string outName, long double tau, int argc )
 
 	for( unsigned int i = 0; i < bruteForce.getSize(); i++ )
 		bfTree.update( bruteForce.getParticle( i ) );
+	cout << "Bruteforce calculation has been done\n";
+
+	const long double TAU_DELTA = 0.0001;
+	cout << "Stepping through tau up to " << tau << " by " << TAU_DELTA << "\n";
+	vector<long double> RMSE;
+	for( long double ctau = TAU_DELTA; ctau <= tau; ctau += TAU_DELTA )
+	{
+		cout << ctau << "\t";
+		ParticleSystem ps( bruteForce );
+		Quadtree qt( ps );
+		for( unsigned int i = 0; i < ps.getSize(); i++ )
+			qt.update( ps.getParticle( i ) );
+		RMSE.push_back( calculateRMSE( bruteForce, ps ) );
+	}
+	cout << "\nDone\n";
 
 } //}}}
+
+long double calculateRMSE( ParticleSystem &bf, ParticleSystem &ps )
+{
+	return numeric_limits<long double>::infinity();
+}
 
 void printDimensions( ParticleSystem &ps )
 { //{{{
