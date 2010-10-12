@@ -27,7 +27,7 @@
 
 /**
  * Utility class used for loading the descriptions of particles out of a file
- * and into memory.
+ * and into memory, providing array like access.
  */
 class ParticleSystem
 {

@@ -25,6 +25,10 @@
 #include "particle_system.hpp"
 #include "quadtree.hpp"
 
+/**
+ * Class representing a thread (potentially with subthreads) used to apply the
+ * Barnes-Hut algorithm to a partial or whole particle system.
+ */
 class BarnesHut : public QThread
 {
 	public:

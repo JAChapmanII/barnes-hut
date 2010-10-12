@@ -27,6 +27,10 @@
 #include "particle_system.hpp"
 #include "quadtree.hpp"
 
+/**
+ * ErrorTester represents a thread responsible for running an RMS error test on
+ * a range of tau values for use in output verification.
+ */
 class ErrorTester : public QThread
 {
 	public:
