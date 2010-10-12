@@ -25,6 +25,14 @@ using std::cerr;
 #include <sstream>
 using std::stringstream;
 
+#include <fstream>
+using std::ofstream;
+
+#include <iomanip>
+using std::fixed;
+using std::setprecision;
+using std::setw;
+
 #include <limits>
 using std::numeric_limits;
 
@@ -41,6 +49,16 @@ ErrorTester::ErrorTester( std::string iFileName, long double iTau ) :
 	bruteForce( NULL ),
 	RMSE( NULL )
 {
+	this->bruteForce = new ParticleSystem();
+} //}}}
+
+ErrorTester::~ErrorTester()
+{ //{{{
+	if( this->bruteForce != NULL )
+	{
+		delete this->bruteForce;
+		this->bruteForce = NULL;
+	}
 } //}}}
 
 void ErrorTester::run()
@@ -50,8 +68,66 @@ void ErrorTester::run()
 		cerr << "Tau bounds do not allow for any steps\n";
 		return;
 	}
+	if( this->bruteForce == NULL )
+	{
+		cerr << "Brute force calculation was not providided\n";
+		return;
+	}
+	unsigned int totalSteps = 1 +
+		(int)( ( this->maxTau - this->minTau ) / this->tauDelta );
+	cout << "[" << this->minTau << ", " << this->maxTau << "] "
+		<< this->tauDelta << " (" << totalSteps << ")\n";
 
-	cerr << "ErrorTester is not fully implemented yet\n";
+	this->RMSE = new long double*[ totalSteps ];
+	ParticleSystem* ctauPS = new ParticleSystem();
+	(*ctauPS) = *bruteForce;
+	Quadtree* ctauQT = new Quadtree( ctauPS );
+	for( long double ctau = this->minTau; ctau < this->maxTau;
+			ctau += this->tauDelta )
+	{
+		ctauPS->zeroForces();
+		ctauQT->update( ctauPS );
+
+		unsigned int i = (int)(ctau / this->tauDelta) -
+			(int)((ctau - this->minTau)/ this->tauDelta);
+		this->RMSE[ i ] = ErrorTester::calculateRMSE(
+				this->bruteForce, ctauPS );
+		cout
+			<< fixed << setprecision( 4 ) << setw( 8 ) << ctau << '\t'
+			<< fixed << setprecision( 4 ) << setw( 8 ) << this->RMSE[ i ][ 0 ] << '\t'
+			<< fixed << setprecision( 4 ) << setw( 8 ) << this->RMSE[ i ][ 1 ] << '\n';
+	}
+	delete ctauPS;
+	delete ctauQT;
+
+	this->save();
+} //}}}
+
+void ErrorTester::save() const
+{ //{{{
+	stringstream tmp; tmp << this->fileName << "_" << this->minTau
+		<< "_" << this->maxTau << "_" << this->tauDelta;
+	cout << "Saving RMSE values to " << tmp.str() << "\n";
+	ofstream outFile( tmp.str().c_str() );
+
+	if( !outFile.good() )
+	{
+		cerr << "Could not save RMSE values\n";
+		return;
+	}
+
+	unsigned int totalSteps = 1 +
+		(int)( ( this->maxTau - this->minTau ) / this->tauDelta );
+	for( long double ctau = this->minTau; ctau < this->maxTau;
+			ctau += this->tauDelta )
+	{
+		unsigned int i = (int)(ctau / this->tauDelta) -
+			(int)((ctau - this->minTau)/ this->tauDelta);
+		outFile
+			<< fixed << setprecision( 4 ) << setw( 8 ) << ctau << '\t'
+			<< fixed << setprecision( 4 ) << setw( 8 ) << this->RMSE[ i ][ 0 ] << '\t'
+			<< fixed << setprecision( 4 ) << setw( 8 ) << this->RMSE[ i ][ 1 ] << '\n';
+	}
 } //}}}
 
 ParticleSystem* ErrorTester::getBruteForce()
@@ -81,7 +157,7 @@ long double ErrorTester::getTauDelta() const
 
 void ErrorTester::setBruteForce( ParticleSystem* nBruteForce )
 { //{{{
-	this->bruteForce = nBruteForce;
+	*(this->bruteForce) = *nBruteForce;
 } //}}}
 
 void ErrorTester::setFileName( string nFileName )
@@ -106,122 +182,44 @@ void ErrorTester::setTauDelta( long double nTauDelta )
 
 ParticleSystem* ErrorTester::generateBruteForce( string fileName )
 { //{{{
-	return NULL;
+	cout << "Beginning brute-force calculation\n";
 
+	ParticleSystem* bfResult = new ParticleSystem( fileName );
+	if( bfResult->getSize() < 1 )
+	{
+		cerr << "Brute-force calculation could not be completed\n";
+		return NULL;
+	}
+
+	Quadtree BFTree( bfResult );
+	BFTree.setTau( 0 );
+
+	BFTree.update( bfResult );
+
+	cout << "Brute-force calculation done\n";
+	return bfResult;
 } //}}}
 
-long double* calculateRMSE( ParticleSystem* bf, ParticleSystem* ps );
-
-void testRMSE( string fileName, string outName, long double tau, int argc )
+long double* ErrorTester::calculateRMSE( ParticleSystem* bruteForce,
+		ParticleSystem* BarnesHut )
 { //{{{
-	ParticleSystem bruteForce( outName, true );
-	bool fromSave = true;
-	if( bruteForce.getSize() < 1 )
+	long double* RMSE = new long double[ 2 ];
+	RMSE[ 0 ] = RMSE[ 1 ] = numeric_limits<long double>::infinity();
+	if( bruteForce->getSize() != BarnesHut->getSize() )
+		return RMSE;
+
+	long double sumErrorSquaredFX = 0.0, sumErrorSquaredFY = 0.0;
+	Particle* bfP; Particle* bhP;
+	for( unsigned int i = 0; i < bruteForce->getSize(); i++ )
 	{
-		fromSave = false;
-		bruteForce.load( fileName );
-		if( bruteForce.getSize() < 1 )
-		{
-			cout << "No particles in file\n";
-			return;
-		}
+		bfP = bruteForce->getParticle( i );
+		bhP = BarnesHut->getParticle( i );
+		sumErrorSquaredFX += (bfP->fx - bhP->fx) * (bfP->fx - bhP->fx);
+		sumErrorSquaredFY += (bfP->fy - bhP->fy) * (bfP->fy - bhP->fy);
 	}
-	bruteForce.printDimensions();
+	RMSE[ 0 ] = sqrt( sumErrorSquaredFX / bruteForce->getSize() );
+	RMSE[ 1 ] = sqrt( sumErrorSquaredFY / bruteForce->getSize() );
 
-	cout << "Creating inital quadtree and running brute force simulation\n";
-	Quadtree bfTree( bruteForce );
-	bfTree.setTau( 0 );
-
-	if( fromSave )
-	{
-		cout << "Loaded brute force from file successfully\n";
-	}
-	else
-	{
-		for( unsigned int i = 0; i < bruteForce.getSize(); i++ )
-			bfTree.update( bruteForce.getParticle( i ) );
-		cout << "Bruteforce calculation has been done\n";
-		bruteForce.save( outName );
-	}
-
-	const long double TAU_DELTA = 0.0001;
-	unsigned int totalSteps = (int)(tau / TAU_DELTA);
-	cout << "Stepping through tau up to " << tau
-		<< " by " << TAU_DELTA << " with a total of " << totalSteps << " steps\n";
-
-	long double ** RMSE = new long double*[ totalSteps + 1 ];
-	for( long double ctau = TAU_DELTA; ctau <= tau; ctau += TAU_DELTA )
-	{
-		stringstream tmp;
-		tmp << outName << "_" << ctau;
-		cout << ctau << "\t";
-
-		ParticleSystem ps( tmp.str(), true );
-		if( ps.getSize() != bruteForce.getSize() )
-		{
-			ps = bruteForce;
-			ps.zeroForces();
-
-			Quadtree qt( ps );
-			qt.setTau( ctau );
-
-			for( unsigned int i = 0; i < ps.getSize(); i++ )
-				qt.update( ps.getParticle( i ) );
-
-			ps.save( tmp.str() );
-		}
-
-		RMSE[ (int)(ctau / TAU_DELTA) ] = calculateRMSE( &bruteForce, &ps );
-		cout << RMSE[ (int)(ctau / TAU_DELTA) ][ 0 ] << " "
-			<< RMSE[ (int)(ctau / TAU_DELTA ) ][ 1 ] << "\n";
-	}
-	cout << "\nDone\n";
-
-	cout << "Outputting all RMSE values:\n";
-	for( unsigned int i = 1; i < totalSteps; i++ )
-		cout << RMSE[ i ][ 0 ] << "\t" << RMSE[ i ][ 1 ] << "\n";
-
-	bool monotonicIncreasingX = true, monotonicIncreasingY = true;
-	for( unsigned int i = 2; i < totalSteps; i++ )
-	{
-		if( RMSE[ i ][ 0 ] < RMSE[ i - 1 ][ 0 ] )
-			monotonicIncreasingX = false;
-		if( RMSE[ i ][ 1 ] < RMSE[ i - 1 ][ 1 ] )
-			monotonicIncreasingY = false;
-	}
-
-	if( !monotonicIncreasingX )
-		cerr << "X RMSE is not monotonic increasing\n";
-	if( !monotonicIncreasingY )
-		cerr << "Y RMSE is not monotonic increasing\n";
-
-	cout << "Outputted results\n";
-} //}}}
-
-long double* calculateRMSE( ParticleSystem* bf, ParticleSystem* ps )
-{ //{{{
-	long double* rmse = new long double[ 2 ];
-	rmse[ 0 ] = rmse[ 1 ] = numeric_limits<long double>::infinity();
-	if( bf->getSize() != ps->getSize() )
-		return rmse;
-
-	long double fx = 0.0, fy = 0.0;
-	for( unsigned int i = 0; i < bf->getSize(); i++ )
-	{
-		long double tfx = 0.0, tfy = 0.0;
-		tfx = bf->getParticle( i )->fx - ps->getParticle( i )->fx;
-		tfx *= tfx;
-		fx += tfx;
-		tfy = bf->getParticle( i )->fy - ps->getParticle( i )->fy;
-		tfy *= tfy;
-		fy += tfy;
-	}
-	fx /= bf->getSize();
-	fy /= bf->getSize();
-
-	rmse[ 0 ] = sqrt( fx );
-	rmse[ 1 ] = sqrt( fy );
-
-	return rmse;
+	return RMSE;
 } //}}}
 

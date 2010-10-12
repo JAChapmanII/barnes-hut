@@ -38,9 +38,19 @@ class ErrorTester : public QThread
 		ErrorTester( std::string iFileName, long double iTau = 0.5 );
 
 		/**
+		 * Proper deconstructor that deallocates memory.
+		 */
+		~ErrorTester();
+
+		/**
 		 * Run the RMSE test for the Barnes-Hut algorithm.
 		 */
 		void run();
+
+		/**
+		 * Saves this system's collected RMSE values to a file.
+		 */
+		void save() const;
 
 		/**
 		 * Returns a pointer to the current brute-force simulation.
@@ -107,6 +117,15 @@ class ErrorTester : public QThread
 		 * @param fileName : file to load
 		 */
 		static ParticleSystem* generateBruteForce( std::string fileName );
+
+		/**
+		 * Calculate the RMSE between a brute-force and a Barnes-Hut simulation.
+		 * @param bruteForce : brute force simulation
+		 * @param BarnesHut : Barnes-Hut simulation
+		 * @return : a long double[ 2 ] containing fx and fy error values
+		 */
+		static long double* calculateRMSE( ParticleSystem* bruteForce,
+				ParticleSystem* BarnesHut );
 
 	private:
 		std::string fileName;
