@@ -37,22 +37,22 @@ class Particle
 		long double fx, fy;
 
 		Particle() :
-			x(0),
+			x(0), //{{{
 			y(0),
 			m(0),
 			fx(0),
 			fy(0)
 		{
-		}
+		} //}}}
 
 		Particle( long double iX, long double iY, long double iM ) :
-			x( iX ),
+			x( iX ), //{{{
 			y( iY ),
 			m( iM ),
 			fx(0),
 			fy(0)
 		{
-		}
+		} //}}}
 
 		/**
 		* Friend function used to print the internals of this to an ostream.
@@ -61,14 +61,14 @@ class Particle
 		*/
 		friend std::ostream& operator<<( std::ostream& out,
 			const Particle& toPrint )
-		{
+		{ //{{{
 			out << "<"
 				<< fixed << setprecision( 4 ) << setw( 8 ) << toPrint.x << ", "
 				<< fixed << setprecision( 4 ) << setw( 8 ) << toPrint.y << "> ["
 				<< fixed << setprecision( 4 ) << setw( 8 ) << toPrint.fx << ", "
 				<< fixed << setprecision( 4 ) << setw( 8 ) << toPrint.fy << "] "
 				<< fixed << setprecision( 4 ) << setw( 8 ) << toPrint.m;
-		}
+		} //}}}
 };
 
 #endif // PARTICLE_CPP
