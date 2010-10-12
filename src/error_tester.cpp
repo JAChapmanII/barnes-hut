@@ -89,8 +89,7 @@ void ErrorTester::run()
 		ctauQT->setTau( ctau );
 		ctauQT->update( ctauPS );
 
-		unsigned int i = (int)(ctau / this->tauDelta) -
-			(int)((ctau - this->minTau)/ this->tauDelta);
+		unsigned int i = (int)((ctau - this->minTau) / this->tauDelta);
 		this->RMSE[ i ] = ErrorTester::calculateRMSE(
 				this->bruteForce, ctauPS );
 	}
@@ -118,12 +117,11 @@ void ErrorTester::save() const
 	for( long double ctau = this->minTau; ctau < this->maxTau;
 			ctau += this->tauDelta )
 	{
-		unsigned int i = (int)(ctau / this->tauDelta) -
-			(int)((ctau - this->minTau)/ this->tauDelta);
+		unsigned int i = (int)((ctau - this->minTau) / this->tauDelta);
 		outFile
-			<< fixed << setprecision( 4 ) << setw( 8 ) << ctau << '\t'
-			<< fixed << setprecision( 4 ) << setw( 8 ) << this->RMSE[ i ][ 0 ] << '\t'
-			<< fixed << setprecision( 4 ) << setw( 8 ) << this->RMSE[ i ][ 1 ] << '\n';
+			<< fixed << setprecision( 8 ) << setw( 12 ) << ctau << '\t'
+			<< fixed << setprecision( 12 ) << setw( 16 ) << this->RMSE[ i ][ 0 ] << '\t'
+			<< fixed << setprecision( 12 ) << setw( 16 ) << this->RMSE[ i ][ 1 ] << '\n';
 	}
 } //}}}
 
