@@ -22,6 +22,7 @@
 
 #include <iostream>
 using std::cerr;
+using std::cout;
 
 #include <algorithm>
 using std::swap;
@@ -34,7 +35,8 @@ using std::numeric_limits;
 static const unsigned int NOT_A_QUADRANT = 5;
 static const long double QUAD_LEEWAY = 8.0 * numeric_limits<long double>::epsilon();
 
-Quadtree::Quadtree(long double iL, long double iR, long double iT, long double iB, Particle* iMe) :
+Quadtree::Quadtree(long double iL, long double iR,
+		long double iB, long double iT, Particle* iMe) :
 	left( iL ), //{{{
 	right( iR ),
 	top( iT ),
@@ -125,10 +127,6 @@ void Quadtree::add(Particle* node)
 	this->recalculateMe();
 } //}}}
 
-void Quadtree::add(Quadtree* tree)
-{ //{{{
-} //}}}
-
 void Quadtree::clear()
 { //{{{
 	this->me = NULL;
@@ -143,7 +141,7 @@ void Quadtree::clear()
 	}
 } //}}}
 
-void Quadtree::update( Particle* p )
+void Quadtree::update( Particle* p ) const
 { //{{{
 	if(( this->me == NULL ) || ( p == NULL ) || ( this->me == p ))
 		return;
@@ -276,27 +274,27 @@ void Quadtree::makeChildren()
 		this->mChildren[ i ]->setTau( this->tau );
 } //}}}
 
-long double Quadtree::getLeft()
+long double Quadtree::getLeft() const
 { //{{{
 	return this->left;
 } //}}}
 
-long double Quadtree::getRight()
+long double Quadtree::getRight() const
 { //{{{
 	return this->right;
 } //}}}
 
-long double Quadtree::getTop()
+long double Quadtree::getTop() const
 { //{{{
 	return this->top;
 } //}}}
 
-long double Quadtree::getBottom()
+long double Quadtree::getBottom() const
 { //{{{
 	return this->bottom;
 } //}}}
 
-long double Quadtree::getTau()
+long double Quadtree::getTau() const
 { //{{{
 	return this->tau;
 } //}}}
@@ -315,8 +313,14 @@ Quadtree* Quadtree::getChild( unsigned int indice )
 	return this->mChildren[ indice % 4 ];
 } //}}}
 
-bool Quadtree::isParent()
+bool Quadtree::isParent() const
 { //{{{
 	return this->parent;
+} //}}}
+
+void Quadtree::printDimensions() const
+{ //{{{
+	cout << "\t[" << this->left << ", " << this->right << "] ["
+		<< this->bottom << ", " << this->top << "]\n";
 } //}}}
 

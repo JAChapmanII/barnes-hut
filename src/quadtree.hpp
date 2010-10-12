@@ -32,13 +32,13 @@ class Quadtree
 		 * Create a quadtree representing a certain amount of space.
 		 * @param iL : left hand coordinate
 		 * @param iR : right hand coordinate
-		 * @param iT : top coordinate
-		 * @param iB : bottom coordinate
+		 * @param iB : top coordinate
+		 * @param iT : bottom coordinate
 		 * @param iMe : initial point to contain
 		 * @note : iMe should only be NULL for empty nodes
 		 */
 		Quadtree( long double iL, long double iR,
-				long double iT, long double iB, Particle* iMe );
+				long double iB, long double iT, Particle* iMe );
 
 		/**
 		 * Create a quadtree based on a particle system.
@@ -56,11 +56,6 @@ class Quadtree
 		 * @param node : node to be added
 		 */
 		void add(Particle* node);
-		/**
-		 * Add an entire Quadtree to this one.
-		 * @param tree : tree to be added
-		 */
-		void add(Quadtree* tree);
 
 		/**
 		 * Delete all contents of this.
@@ -70,7 +65,7 @@ class Quadtree
 		/**
 		 * Updates a particle's acceleration by using the Barnes-Hut algorithm
 		 */
-		void update( Particle* p );
+		void update( Particle* p ) const;
 
 		/**
 		 * Return the point this Quadtree represents.
@@ -94,31 +89,31 @@ class Quadtree
 		 * Returns left side.
 		 * @return : left side
 		 */
-		long double getLeft();
+		long double getLeft() const;
 
 		/**
 		 * Returns right side.
 		 * @return : right side
 		 */
-		long double getRight();
+		long double getRight() const;
 
 		/**
 		 * Returns top side.
 		 * @return : top side
 		 */
-		long double getTop();
+		long double getTop() const;
 
 		/**
 		 * Returns bottom side.
 		 * @return : bottom side
 		 */
-		long double getBottom();
+		long double getBottom() const;
 
 		/**
 		 * Returns the tau of this quadtree.
 		 * @return : this's tau
 		 */
-		long double getTau();
+		long double getTau() const;
 
 		/**
 		 * Sets this tau of this quadtree.
@@ -137,7 +132,12 @@ class Quadtree
 		 * Returns true if this has children.
 		 * @return : true if this has children
 		 */
-		bool isParent();
+		bool isParent() const;
+
+		/**
+		 * Prints the dimensions of this to cout.
+		 */
+		void printDimensions() const;
 
 	private:
 		/**
