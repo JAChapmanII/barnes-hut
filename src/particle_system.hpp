@@ -130,6 +130,11 @@ class ParticleSystem
 		 */
 		long double getTop() const;
 
+		/**
+		 * Prints the dimensions of this to cout.
+		 */
+		void printDimensions() const;
+
 	private:
 		/// The number of particles in this system.
 		unsigned int mSize;
@@ -137,9 +142,9 @@ class ParticleSystem
 		Particle** mParticles;
 
 		Particle* minXP;
-		Particle* mfxXP;
+		Particle* maxXP;
 		Particle* minYP;
-		Particle* mfxYP;
+		Particle* maxYP;
 };
 
 #endif // PARTICLE_SYSTEM_HPP

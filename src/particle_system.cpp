@@ -24,6 +24,7 @@ using std::ostream;
 
 #include <iostream>
 using std::cerr;
+using std::cout;
 
 #include <iomanip>
 using std::fixed;
@@ -38,9 +39,9 @@ ParticleSystem::ParticleSystem() :
 	mSize( 0 ), //{{{
 	mParticles( NULL ),
 	minXP( NULL ),
-	mfxXP( NULL ),
+	maxXP( NULL ),
 	minYP( NULL ),
-	mfxYP( NULL )
+	maxYP( NULL )
 {
 } //}}}
 
@@ -48,9 +49,9 @@ ParticleSystem::ParticleSystem( string fileName, bool hasForces ) :
 	mSize( 0 ), //{{{
 	mParticles( NULL ),
 	minXP( NULL ),
-	mfxXP( NULL ),
+	maxXP( NULL ),
 	minYP( NULL ),
-	mfxYP( NULL )
+	maxYP( NULL )
 {
 	this->load( fileName, hasForces );
 } //}}}
@@ -59,9 +60,9 @@ ParticleSystem::ParticleSystem( const ParticleSystem& rhs ) :
 	mSize( 0 ), //{{{
 	mParticles( NULL ),
 	minXP( NULL ),
-	mfxXP( NULL ),
+	maxXP( NULL ),
 	minYP( NULL ),
-	mfxYP( NULL )
+	maxYP( NULL )
 {
 	(*this) = rhs;
 } //}}}
@@ -84,12 +85,12 @@ ParticleSystem& ParticleSystem::operator=( const ParticleSystem& rhs )
 
 		if((this->minXP == NULL) || ( this->mParticles[ i ]->x < this->minXP->x ))
 			this->minXP = this->mParticles[ i ];
-		if((this->mfxXP == NULL) || ( this->mParticles[ i ]->x > this->mfxXP->x ))
-			this->mfxXP = this->mParticles[ i ];
+		if((this->maxXP == NULL) || ( this->mParticles[ i ]->x > this->maxXP->x ))
+			this->maxXP = this->mParticles[ i ];
 		if((this->minYP == NULL) || ( this->mParticles[ i ]->y < this->minYP->y ))
 			this->minYP = this->mParticles[ i ];
-		if((this->mfxYP == NULL) || ( this->mParticles[ i ]->y > this->mfxYP->y ))
-			this->mfxYP = this->mParticles[ i ];
+		if((this->maxYP == NULL) || ( this->mParticles[ i ]->y > this->maxYP->y ))
+			this->maxYP = this->mParticles[ i ];
 	}
 } //}}}
 
@@ -138,12 +139,12 @@ void ParticleSystem::load( string fileName, bool hasForces )
 
 		if((this->minXP == NULL) || ( this->mParticles[ l ]->x < this->minXP->x ))
 			this->minXP = this->mParticles[ l ];
-		if((this->mfxXP == NULL) || ( this->mParticles[ l ]->x > this->mfxXP->x ))
-			this->mfxXP = this->mParticles[ l ];
+		if((this->maxXP == NULL) || ( this->mParticles[ l ]->x > this->maxXP->x ))
+			this->maxXP = this->mParticles[ l ];
 		if((this->minYP == NULL) || ( this->mParticles[ l ]->y < this->minYP->y ))
 			this->minYP = this->mParticles[ l ];
-		if((this->mfxYP == NULL) || ( this->mParticles[ l ]->y > this->mfxYP->y ))
-			this->mfxYP = this->mParticles[ l ];
+		if((this->maxYP == NULL) || ( this->mParticles[ l ]->y > this->maxYP->y ))
+			this->maxYP = this->mParticles[ l ];
 	}
 
 	file.close();
@@ -183,9 +184,9 @@ void ParticleSystem::clear()
 	delete[] this->mParticles;
 	this->mParticles = NULL;
 	this->minXP = NULL;
-	this->mfxXP = NULL;
+	this->maxXP = NULL;
 	this->minYP = NULL;
-	this->mfxYP = NULL;
+	this->maxYP = NULL;
 	this->mSize = 0;
 } //}}}
 
@@ -231,7 +232,7 @@ long double ParticleSystem::getLeft() const
 
 long double ParticleSystem::getRight() const
 { //{{{
-	return this->mfxXP->x;
+	return this->maxXP->x;
 } //}}}
 
 long double ParticleSystem::getBottom() const
@@ -241,6 +242,12 @@ long double ParticleSystem::getBottom() const
 
 long double ParticleSystem::getTop() const
 { //{{{
-	return this->mfxYP->y;
+	return this->maxYP->y;
+} //}}}
+
+void ParticleSystem::printDimensions() const
+{ //{{{
+	cout << "\t[" << this->minXP->x << ", " << this->maxXP->x << "] ["
+		<< this->minYP->y << ", " << this->maxYP->y << "]\n";
 } //}}}
 
