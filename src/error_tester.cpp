@@ -75,6 +75,9 @@ void ErrorTester::run()
 		cerr << "Brute force calculation was not providided\n";
 		return;
 	}
+	if( this->minTau == 0 )
+		this->minTau = this->tauDelta;
+
 	unsigned int totalSteps = 1 +
 		(int)( ( this->maxTau - this->minTau ) / this->tauDelta );
 	cout << "[" << this->minTau << ", " << this->maxTau << "] "
