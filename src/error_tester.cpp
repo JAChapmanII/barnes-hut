@@ -84,12 +84,17 @@ void ErrorTester::run()
 	ParticleSystem* ctauPS = new ParticleSystem();
 	(*ctauPS) = *(this->bruteForce);
 	Quadtree* ctauQT = new Quadtree( ctauPS );
+	BarnesHut* mBH = new BarnesHut( ctauPS, ctauQT );
+	mBH->setLast( ctauPS->getSize() );
+
 	for( long double ctau = this->minTau; ctau < this->maxTau;
 			ctau += this->tauDelta )
 	{
 		ctauPS->zeroForces();
 		ctauQT->setTau( ctau );
-		ctauQT->update( ctauPS );
+
+		mBH->start();
+		mBH->wait();
 
 		unsigned int i = (int)((ctau - this->minTau) / this->tauDelta);
 		this->RMSE[ i ] = ErrorTester::calculateRMSE(
