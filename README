@@ -1,7 +1,7 @@
-This is an implementation of the Barnes-Hut algorithm, as it would need to
-be implmented if I were in Analysis of Algorithms. Meant to give me experience
-for when I try to do something similar (unless this works out to be what I was
-thinking the fast multipole method was) in Universum Meum.
+This is a threaded implementation of the Barnes-Hut algorithm, as it would need
+to be implmented if I were in Analysis of Algorithms. Meant to give me
+experience for when I try to do something similar (unless this works out to be
+what I was thinking the fast multipole method was) in Universum Meum.
 
 Compile:
 	To compile, you will need the Qt library for threading support
@@ -26,14 +26,14 @@ Run:
 	arg5 is a special arg that makes the program display the quadtree after
 	running the Barnes-Hut algorithm if it was compiled with gui=yes
 
+	When run this way, this program creates 4 worker threads to split up the work
+	of applying the Barnes-Hut algorithm to particles in the system.
+
 	-- THIS IS NOT SUGGESTED FOR END USERS --
 	If any argument after tau is "-t", then the program will run a test of the
 	root mean square error.
-	If you are not the typical user, I would at least put the input data in its
-	own folder, or you will be spammed with files ;)
-	Currently, the system should be able to resume if you kill the program in the
-	middle. However, the error it reports for saved files is wrong currntly. I'm
-	going to fix that. Hold your horses.
+	Run run this way, the program currently tries to divide the problem space
+	between 4 threads, but does not use the threaded BH application algorithm
 	-- THIS IS NOT SUGGESTED FOR END USERS --
 
 Input/output format:
@@ -57,6 +57,3 @@ Notes:
 	Pay attention to compiler warnings about using == and != on floating point
 	values if you ever make something like this!
 
-	This could be multithreaded pretty easily for large brute-force simulations.
-	I will look into getting portable threading going (never done any threading
-	before, so don't get your hopes up just yet)
