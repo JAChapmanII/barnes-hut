@@ -54,50 +54,30 @@ void BarnesHut::run()
 		return;
 	}
 
-	if( this->numThreads > (this->last - this->first) )
-	{
-		BarnesHut** workers = new BarnesHut*[ this->last - this->first ];
-		for( unsigned int i = 0; i < (this->last - this->first); i++ )
-		{
-			workers[ i ] = new BarnesHut( this->ps, this->qt );
-			workers[ i ]->setFirst( i + this->first );
-			workers[ i ]->setLast( i + this->first + 1 );
-			workers[ i ]->setNumberOfThreads( 0 );
-			workers[ i ]->start();
-		}
-
-		for( unsigned int i = 0; i < (this->last - this->first); i++ )
-		{
-			workers[ i ]->wait();
-			delete workers[ i ];
-		}
-		delete workers;
-
-		return;
-	}
+	unsigned int tThreads = (this->numThreads > (this->last - this->first)) ?
+		(this->last - this->first) : this->numThreads;
+	unsigned int ppt = (this->last - this->first) / tThreads;
 
 	BarnesHut** workers = new BarnesHut*[ this->numThreads ];
 
-	unsigned int ppt = (this->last - this->first) / this->numThreads;
-	for( unsigned int i = 0; i < this->numThreads; i++ )
+	for( unsigned int i = 0; i < tThreads; i++ )
 	{
 		workers[ i ] = new BarnesHut( this->ps, this->qt );
 		workers[ i ]->setFirst( this->first + i * ppt );
 		workers[ i ]->setLast( this->first + (i + 1) * ppt );
-		if( i == this->numThreads - 1 )
+		if( i == (tThreads - 1) )
 			workers[ i ]->setLast( this->last );
 		workers[ i ]->setNumberOfThreads( 0 );
 		workers[ i ]->start();
 		workers[ i ]->wait( 10 );
 	}
 
-	for( unsigned int i = 0; i< this->numThreads; i++ )
+	for( unsigned int i = 0; i < tThreads; i++ )
 	{
 		workers[ i ]->wait();
 		delete workers[ i ];
 	}
 	delete workers;
-
 } //}}}
 
 ParticleSystem* BarnesHut::getParticleSystem()
