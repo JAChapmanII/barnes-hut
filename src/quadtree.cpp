@@ -280,17 +280,19 @@ void Quadtree::makeChildren()
 	this->mChildren[ 0 ] = new Quadtree(
 			midX, this->right,
 			midY, this->top, NULL );
+	this->mChildren[ 0 ]->setTau( this->tau );
 	this->mChildren[ 1 ] = new Quadtree(
 			this->left, midX,
 			midY, this->top, NULL );
+	this->mChildren[ 1 ]->setTau( this->tau );
 	this->mChildren[ 2 ] = new Quadtree(
 			this->left, midX,
 			this->bottom, midY, NULL );
+	this->mChildren[ 2 ]->setTau( this->tau );
 	this->mChildren[ 3 ] = new Quadtree(
 			midX, this->right,
 			this->bottom, midY, NULL );
-	for( unsigned int i = 0; i < 4; i++ )
-		this->mChildren[ i ]->setTau( this->tau );
+	this->mChildren[ 3 ]->setTau( this->tau );
 
 	this->parent = true;
 } //}}}
