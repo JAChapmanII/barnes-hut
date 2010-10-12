@@ -148,7 +148,9 @@ int main( int argc, char** argv )
 
 	if( doTest )
 	{
-		ErrorTester mET;
+		ErrorTester mET( fileName, tau );
+		mET.start();
+		mET.wait();
 		//testRMSE( fileName, outputName, tau, argc );
 	}
 	else
