@@ -6,10 +6,10 @@ OBJS=$(SOURCES:.cpp=.o)
 EXEC=barnes-hut
 
 CC=g++
-CFLAGS=
+CFLAGS=`pkg-config QtCore --cflags`
 
 LD=ld
-LFLAGS=
+LFLAGS=`pkg-config QtCore --libs`
 
 ifdef gui
 CFLAGS+=-D GUI
