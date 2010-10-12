@@ -44,7 +44,7 @@ class Quadtree
 		 * Create a quadtree based on a particle system.
 		 * @param ps : ParticleSystem to base this off of
 		 */
-		Quadtree( ParticleSystem &rhs );
+		Quadtree( ParticleSystem* ps );
 
 		/**
 		 * Proper deconstructor that delets all associated memory.
@@ -55,7 +55,13 @@ class Quadtree
 		 * Add a node to this tree.
 		 * @param node : node to be added
 		 */
-		void add(Particle* node);
+		void add( Particle* node );
+
+		/**
+		 * Add a particle system to this tree.
+		 * @param ps : ParticleSystem which should be added
+		 */
+		void add( ParticleSystem* ps );
 
 		/**
 		 * Delete all contents of this.
@@ -63,9 +69,16 @@ class Quadtree
 		void clear();
 
 		/**
-		 * Updates a particle's acceleration by using the Barnes-Hut algorithm
+		 * Updates a particle's acceleration by using the Barnes-Hut algorithm.
+		 * @param p : Particle to update
 		 */
 		void update( Particle* p ) const;
+
+		/**
+		 * Updates an entire particle system's particles with new forces.
+		 * @param ps : ParticleSystem to update
+		 */
+		void update( ParticleSystem* ps ) const;
 
 		/**
 		 * Return the point this Quadtree represents.

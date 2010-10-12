@@ -52,7 +52,7 @@ Quadtree::Quadtree(long double iL, long double iR,
 		swap( this->bottom, this->top );
 } //}}}
 
-Quadtree::Quadtree( ParticleSystem &rhs ) :
+Quadtree::Quadtree( ParticleSystem* ps ) :
 	left( 0 ), //{{{
 	right( 0 ),
 	top( 0 ),
@@ -63,10 +63,10 @@ Quadtree::Quadtree( ParticleSystem &rhs ) :
 	mChildren( NULL )
 {
 	// Figure out the sides of the Quadtree {{{
-	this->left = rhs.getLeft() - QUAD_LEEWAY;
-	this->right = rhs.getRight() + QUAD_LEEWAY;
-	this->bottom = rhs.getBottom() - QUAD_LEEWAY;
-	this->top = rhs.getTop() + QUAD_LEEWAY;
+	this->left = ps->getLeft() - QUAD_LEEWAY;
+	this->right = ps->getRight() + QUAD_LEEWAY;
+	this->bottom = ps->getBottom() - QUAD_LEEWAY;
+	this->top = ps->getTop() + QUAD_LEEWAY;
 
 	long double w = this->right - this->left;
 	long double h = this->top - this->bottom;
@@ -81,8 +81,7 @@ Quadtree::Quadtree( ParticleSystem &rhs ) :
 		this->right += (h - w)/2.0;
 	} //}}}
 
-	for( unsigned int i = 0; i < rhs.getSize(); i++ )
-		this->add( rhs.getParticle( i ) );
+	this->add( ps );
 } //}}}
 
 Quadtree::~Quadtree()
@@ -113,7 +112,6 @@ void Quadtree::add(Particle* node)
 	if( !this->parent )
 	{
 		this->makeChildren();
-		this->parent = true;
 
 		this->mChildren[ this->getQuadrant( node ) ]->add( node );
 		this->mChildren[ this->getQuadrant( this->me ) ]->add( this->me );
@@ -127,6 +125,15 @@ void Quadtree::add(Particle* node)
 	this->recalculateMe();
 } //}}}
 
+void Quadtree::add( ParticleSystem* ps )
+{ //{{{
+	if( ps == NULL )
+		return;
+
+	for( unsigned int i = 0; i < ps->getSize(); i++ )
+		this->add( ps->getParticle( i ) );
+} //}}}
+
 void Quadtree::clear()
 { //{{{
 	this->me = NULL;
@@ -136,9 +143,12 @@ void Quadtree::clear()
 
 	for( unsigned int i = 0; i < 4; ++i )
 	{
+		if( this->mChildren[ i ] == NULL )
+			continue;
 		delete this->mChildren[ i ];
 		this->mChildren[ i ] = NULL;
 	}
+	this->parent = false;
 } //}}}
 
 void Quadtree::update( Particle* p ) const
@@ -180,6 +190,15 @@ void Quadtree::update( Particle* p ) const
 		p->fy += dy * gm / d3;
 		return;
 	}
+} //}}}
+
+void Quadtree::update( ParticleSystem* ps ) const
+{ //{{{
+	if( ps == NULL )
+		return;
+
+	for( unsigned int i = 0; i < ps->getSize(); i++ )
+		this->update( ps->getParticle( i ) );
 } //}}}
 
 Particle* Quadtree::getMe()
@@ -272,6 +291,8 @@ void Quadtree::makeChildren()
 			this->bottom, midY, NULL );
 	for( unsigned int i = 0; i < 4; i++ )
 		this->mChildren[ i ]->setTau( this->tau );
+
+	this->parent = true;
 } //}}}
 
 long double Quadtree::getLeft() const
