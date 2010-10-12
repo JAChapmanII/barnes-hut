@@ -77,14 +77,22 @@ ParticleSystem& ParticleSystem::operator=( const ParticleSystem& rhs )
 	if( this == &rhs )
 		return (*this);
 
-	this->clear();
-	this->mSize = rhs.mSize;
-	this->mParticles = new Particle*[ this->mSize ];
+	if( this->mSize != rhs.mSize )
+	{
+		this->clear();
+		this->mSize = rhs.mSize;
+		this->mParticles = new Particle*[ this->mSize ];
+		for( unsigned int i = 0; i < this->mSize; i++ )
+			this->mParticles[ i ] = new Particle();
+	}
+
 	for( unsigned int i = 0; i < this->mSize; i++ )
 	{
-		this->mParticles[ i ] = new Particle(
-			rhs.mParticles[ i ]->x, rhs.mParticles[ i ]->y,
-			rhs.mParticles[ i ]->m );
+		this->mParticles[ i ]->x = rhs.mParticles[ i ]->x;
+		this->mParticles[ i ]->y = rhs.mParticles[ i ]->y;
+		this->mParticles[ i ]->m = rhs.mParticles[ i ]->m;
+		this->mParticles[ i ]->fx = rhs.mParticles[ i ]->fx;
+		this->mParticles[ i ]->fy = rhs.mParticles[ i ]->fy;
 
 		if((this->minXP == NULL) || ( this->mParticles[ i ]->x < this->minXP->x ))
 			this->minXP = this->mParticles[ i ];
