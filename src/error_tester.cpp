@@ -33,9 +33,82 @@ using std::numeric_limits;
 #include "error_tester.hpp"
 using std::string;
 
-void ErrorTester::run()
+ErrorTester::ErrorTester( std::string iFileName, long double iTau ) :
+	fileName( iFileName ), //{{{
+	minTau( 0.0 ),
+	maxTau( iTau ),
+	tauDelta( 0.0001 ),
+	bruteForce( NULL ),
+	RMSE( NULL )
 {
-}
+} //}}}
+
+void ErrorTester::run()
+{ //{{{
+	if( this->maxTau < this->minTau )
+	{
+		cerr << "Tau bounds do not allow for any steps\n";
+		return;
+	}
+
+	cerr << "ErrorTester is not fully implemented yet\n";
+} //}}}
+
+ParticleSystem* ErrorTester::getBruteForce()
+{ //{{{
+	return this->bruteForce;
+} //}}}
+
+string ErrorTester::getFileName() const
+{ //{{{
+	return this->fileName;
+} //}}}
+
+long double ErrorTester::getMinTau() const
+{ //{{{
+	return this->minTau;
+} //}}}
+
+long double ErrorTester::getMaxTau() const
+{ //{{{
+	return this->maxTau;
+} //}}}
+
+long double ErrorTester::getTauDelta() const
+{ //{{{
+	return this->tauDelta;
+} //}}}
+
+void ErrorTester::setBruteForce( ParticleSystem* nBruteForce )
+{ //{{{
+	this->bruteForce = nBruteForce;
+} //}}}
+
+void ErrorTester::setFileName( string nFileName )
+{ //{{{
+	this->fileName = nFileName;
+} //}}}
+
+void ErrorTester::setMinTau( long double nTau )
+{ //{{{
+	this->minTau = nTau;
+} //}}}
+
+void ErrorTester::setMaxTau( long double nTau )
+{ //{{{
+	this->maxTau = nTau;
+} //}}}
+
+void ErrorTester::setTauDelta( long double nTauDelta )
+{ //{{{
+	this->tauDelta = nTauDelta;
+} //}}}
+
+ParticleSystem* ErrorTester::generateBruteForce( string fileName )
+{ //{{{
+	return NULL;
+
+} //}}}
 
 long double* calculateRMSE( ParticleSystem* bf, ParticleSystem* ps );
 
