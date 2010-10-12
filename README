@@ -32,8 +32,9 @@ Run:
 	-- THIS IS NOT SUGGESTED FOR END USERS --
 	If any argument after tau is "-t", then the program will run a test of the
 	root mean square error.
-	Run run this way, the program currently tries to divide the problem space
-	between 4 threads, but does not use the threaded BH application algorithm
+	Run this way, the program currently tries to divide the problem space
+	and do it in chunks that are saved in between. Each calculation uses the
+	multithreaded Barnes-Hut algorithm for speed.
 	-- THIS IS NOT SUGGESTED FOR END USERS --
 
 Input/output format:

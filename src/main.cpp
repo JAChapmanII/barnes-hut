@@ -150,36 +150,29 @@ int main( int argc, char** argv )
 	if( doTest )
 	{
 		ParticleSystem* bruteForce = ErrorTester::generateBruteForce( fileName );
+		ErrorTester mET( fileName, tau );
+		mET.setBruteForce( bruteForce );
 
-		ErrorTester mET1( fileName, tau );
-		mET1.setMaxTau( tau / 8.0 );
-		mET1.setBruteForce( bruteForce );
-		mET1.start();
-		mET1.wait( 100 );
+		mET.setMinTau( 0.0001 );
+		mET.setMaxTau( tau / 8.0 );
+		mET.start();
+		mET.wait();
 
-		ErrorTester mET2( fileName, tau );
-		mET2.setMinTau( tau / 8.0 );
-		mET2.setMaxTau( tau / 4.0 );
-		mET2.setBruteForce( bruteForce );
-		mET2.start();
-		mET2.wait( 100 );
+		mET.setMinTau( tau / 8.0 );
+		mET.setMaxTau( tau / 4.0 );
+		mET.start();
+		mET.wait();
 
-		ErrorTester mET3( fileName, tau );
-		mET3.setMinTau( tau / 4.0 );
-		mET3.setMaxTau( tau / 2.0 );
-		mET3.setBruteForce( bruteForce );
-		mET3.start();
-		mET3.wait( 100 );
+		mET.setMinTau( tau / 4.0 );
+		mET.setMaxTau( tau / 2.0 );
+		mET.start();
+		mET.wait();
 
-		ErrorTester mET4( fileName, tau );
-		mET4.setMinTau( tau / 2.0 );
-		mET4.setBruteForce( bruteForce );
-		mET4.start();
-
-		mET1.wait();
-		mET2.wait();
-		mET3.wait();
-		mET4.wait();
+		mET.setMinTau( tau / 2.0 );
+		mET.setMaxTau( tau );
+		mET.setBruteForce( bruteForce );
+		mET.start();
+		mET.wait();
 	}
 	else
 		simulate( fileName, outputName, tau, argc );

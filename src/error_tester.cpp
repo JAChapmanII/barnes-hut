@@ -75,7 +75,7 @@ void ErrorTester::run()
 		cerr << "Brute force calculation was not providided\n";
 		return;
 	}
-	if( this->minTau == 0 )
+	if( this->minTau < 2.0 * numeric_limits<long double>::epsilon() )
 		this->minTau = this->tauDelta;
 
 	unsigned int totalSteps = 1 +
