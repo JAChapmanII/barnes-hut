@@ -173,8 +173,7 @@ void Quadtree::update( Particle* p ) const
 	}
 
 	long double s = this->right - this->left;
-	if(( fabs( this->me->m ) < 2.0*numeric_limits<long double>::epsilon() ) ||
-		( (s / d) >= this->tau ) ||
+	if(( (s / d) >= this->tau ) ||
 		( this->getQuadrant( p ) != NOT_A_QUADRANT ))
 	{
 		this->mChildren[ 0 ]->update( p );
@@ -212,27 +211,21 @@ void Quadtree::recalculateMe()
 		return;
 
 	this->me->x = 0; this->me->y = 0; this->me->m = 0;
-	for( unsigned int i = 0; i < 4; i++ )
-	{
-		if( this->mChildren[ i ]->getMe() != NULL )
-			this->me->m += this->mChildren[ i ]->getMe()->m;
-	}
-
-	if( fabs( this->me->m ) < 2.0*numeric_limits<long double>::epsilon() )
-		return;
-
 	Particle* tChild = NULL;
+
 	for( unsigned int i = 0; i < 4; i++ )
 	{
 		tChild = this->mChildren[ i ]->getMe();
 		if( tChild != NULL )
 		{
-			this->me->x += tChild->x * tChild->m;
-			this->me->y += tChild->y * tChild->m;
+			this->me->x += tChild->x * this->mChildren[ i ]->getNumberOfNodes();
+			this->me->y += tChild->y * this->mChildren[ i ]->getNumberOfNodes();
+			this->me->m += tChild->m * this->mChildren[ i ]->getNumberOfNodes();
 		}
 	}
-	this->me->x /= this->me->m;
-	this->me->y /= this->me->m;
+	this->me->x /= this->getNumberOfNodes();
+	this->me->y /= this->getNumberOfNodes();
+	this->me->m /= this->getNumberOfNodes();
 } //}}}
 
 unsigned int Quadtree::getQuadrant( Particle* node ) const
@@ -345,5 +338,19 @@ void Quadtree::printDimensions() const
 { //{{{
 	cout << "\t[" << this->left << ", " << this->right << "] ["
 		<< this->bottom << ", " << this->top << "]\n";
+} //}}}
+
+unsigned int Quadtree::getNumberOfNodes() const
+{ //{{{
+	if( this->me == NULL )
+		return 0;
+
+	if( !this->parent )
+		return 1;
+
+	return this->mChildren[ 0 ]->getNumberOfNodes() +
+		this->mChildren[ 1 ]->getNumberOfNodes() +
+		this->mChildren[ 2 ]->getNumberOfNodes() +
+		this->mChildren[ 3 ]->getNumberOfNodes();
 } //}}}
 

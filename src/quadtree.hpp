@@ -152,6 +152,12 @@ class Quadtree
 		 */
 		void printDimensions() const;
 
+		/**
+		 * Returns the number of nodes in this tree.
+		 * @return : number of nodes in this
+		 */
+		unsigned int getNumberOfNodes() const;
+
 	private:
 		/**
 		 * Allocates space for and creates children Quadtrees
