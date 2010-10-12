@@ -32,6 +32,7 @@ using std::stringstream;
 #include "quadtree.hpp"
 
 #include "error_tester.hpp"
+#include "barnes_hut.hpp"
 
 #ifdef GUI
 //{{{
@@ -203,8 +204,10 @@ void simulate( string fileName, string outName, long double tau, int argc )
 	mQT.printDimensions();
 
 	cout << "Runnnig Barnes-Hut on all particles\n";
-	for( unsigned int i = 0; i < mPS.getSize(); i++ )
-		mQT.update( mPS.getParticle( i ) );
+	BarnesHut mBH( &mPS, &mQT );
+	mBH.setLast( mPS.getSize() );
+	mBH.start();
+	mBH.wait();
 
 	if( argc > 3 )
 		cout << mPS << '\n';
