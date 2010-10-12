@@ -2,6 +2,7 @@ Running this for a long time doing a test case uses an exorbitant amount of RAM.
 Probably a memory leak somewhere in the testing code.
 
 This thing is stupidly parallizable, get at least basic threading support down.
+	STARTED
 
 The method for handling test cases needs to be re-written just to save the error
 and re-load partial error data. Saving each test case thrashes the HDD.

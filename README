@@ -4,6 +4,7 @@ for when I try to do something similar (unless this works out to be what I was
 thinking the fast multipole method was) in Universum Meum.
 
 Compile:
+	To compile, you will need the Qt library for threading support
 	To compile without SFML GUI:
 		make
 	To compile with SFML GUI:
