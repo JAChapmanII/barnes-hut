@@ -92,10 +92,6 @@ void ErrorTester::run()
 			(int)((ctau - this->minTau)/ this->tauDelta);
 		this->RMSE[ i ] = ErrorTester::calculateRMSE(
 				this->bruteForce, ctauPS );
-		cout
-			<< fixed << setprecision( 4 ) << setw( 8 ) << ctau << '\t'
-			<< fixed << setprecision( 4 ) << setw( 8 ) << this->RMSE[ i ][ 0 ] << '\t'
-			<< fixed << setprecision( 4 ) << setw( 8 ) << this->RMSE[ i ][ 1 ] << '\n';
 	}
 	delete ctauPS;
 	delete ctauQT;
