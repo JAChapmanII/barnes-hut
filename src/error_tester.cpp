@@ -41,6 +41,8 @@ using std::numeric_limits;
 #include "error_tester.hpp"
 using std::string;
 
+#include "barnes_hut.hpp"
+
 ErrorTester::ErrorTester( std::string iFileName, long double iTau ) :
 	fileName( iFileName ), //{{{
 	minTau( 0.0 ),
@@ -189,7 +191,10 @@ ParticleSystem* ErrorTester::generateBruteForce( string fileName )
 	Quadtree BFTree( bfResult );
 	BFTree.setTau( 0 );
 
-	BFTree.update( bfResult );
+	BarnesHut bruteForceBH( bfResult, &BFTree );
+	bruteForceBH.setLast( bfResult->getSize() );
+	bruteForceBH.start();
+	bruteForceBH.wait();
 
 	cout << "Brute-force calculation done\n";
 	return bfResult;
