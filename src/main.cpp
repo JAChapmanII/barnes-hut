@@ -148,10 +148,12 @@ int main( int argc, char** argv )
 
 	if( doTest )
 	{
+		ParticleSystem* bruteForce = ErrorTester::generateBruteForce( fileName );
 		ErrorTester mET( fileName, tau );
+		mET.setMinTau( tau / 2.0 );
+		mET.setBruteForce( bruteForce );
 		mET.start();
 		mET.wait();
-		//testRMSE( fileName, outputName, tau, argc );
 	}
 	else
 		simulate( fileName, outputName, tau, argc );
@@ -171,7 +173,7 @@ void simulate( string fileName, string outName, long double tau, int argc )
 	mPS.printDimensions();
 
 	cout << "Putting all particles into Quadtree, let's see if we SIGSEGV\n";
-	Quadtree mQT( mPS );
+	Quadtree mQT( &mPS );
 	mQT.setTau( tau );
 	mQT.printDimensions();
 
