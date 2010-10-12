@@ -80,12 +80,13 @@ void ErrorTester::run()
 
 	this->RMSE = new long double*[ totalSteps ];
 	ParticleSystem* ctauPS = new ParticleSystem();
-	(*ctauPS) = *bruteForce;
+	(*ctauPS) = *(this->bruteForce);
 	Quadtree* ctauQT = new Quadtree( ctauPS );
 	for( long double ctau = this->minTau; ctau < this->maxTau;
 			ctau += this->tauDelta )
 	{
 		ctauPS->zeroForces();
+		ctauQT->setTau( ctau );
 		ctauQT->update( ctauPS );
 
 		unsigned int i = (int)(ctau / this->tauDelta) -
