@@ -74,6 +74,9 @@ ParticleSystem::~ParticleSystem()
 
 ParticleSystem& ParticleSystem::operator=( const ParticleSystem& rhs )
 { //{{{
+	if( this == &rhs )
+		return (*this);
+
 	this->clear();
 	this->mSize = rhs.mSize;
 	this->mParticles = new Particle*[ this->mSize ];
@@ -92,6 +95,8 @@ ParticleSystem& ParticleSystem::operator=( const ParticleSystem& rhs )
 		if((this->maxYP == NULL) || ( this->mParticles[ i ]->y > this->maxYP->y ))
 			this->maxYP = this->mParticles[ i ];
 	}
+
+	return (*this);
 } //}}}
 
 void ParticleSystem::load( string fileName, bool hasForces )
