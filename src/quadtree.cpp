@@ -220,12 +220,11 @@ void Quadtree::recalculateMe()
 		{
 			this->me->x += tChild->x * this->mChildren[ i ]->getNumberOfNodes();
 			this->me->y += tChild->y * this->mChildren[ i ]->getNumberOfNodes();
-			this->me->m += tChild->m * this->mChildren[ i ]->getNumberOfNodes();
+			this->me->m += tChild->m;
 		}
 	}
 	this->me->x /= this->getNumberOfNodes();
 	this->me->y /= this->getNumberOfNodes();
-	this->me->m /= this->getNumberOfNodes();
 } //}}}
 
 unsigned int Quadtree::getQuadrant( Particle* node ) const
