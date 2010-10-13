@@ -58,3 +58,7 @@ Notes:
 	Pay attention to compiler warnings about using == and != on floating point
 	values if you ever make something like this!
 
+	This version uses the geometric center as there are data points that have
+	negative value and cells that add up to zero. I'm still investigating the
+	process behind handling this. However, on test run on large data this method
+	has less error than the previous method of using the "center of mass".
