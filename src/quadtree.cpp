@@ -44,12 +44,15 @@ Quadtree::Quadtree(long double iL, long double iR,
 	tau( 0.5 ),
 	parent( false ),
 	me( iMe ),
-	mChildren( NULL )
+	mChildren( NULL ),
+	size( 0 )
 {
 	if( this->left > this->right )
 		swap( this->left, this->right );
 	if( this->bottom > this->top )
 		swap( this->bottom, this->top );
+	if( this->me != NULL )
+		this->size++;
 } //}}}
 
 Quadtree::Quadtree( ParticleSystem* ps ) :
@@ -60,7 +63,8 @@ Quadtree::Quadtree( ParticleSystem* ps ) :
 	tau( 0.5 ),
 	parent( false ),
 	me( NULL ),
-	mChildren( NULL )
+	mChildren( NULL ),
+	size( 0 )
 {
 	// Figure out the sides of the Quadtree {{{
 	this->left = ps->getLeft() - QUAD_LEEWAY;
@@ -102,6 +106,8 @@ void Quadtree::add(Particle* node)
 			<< (*node) << "\n";
 		return;
 	}
+
+	this->size++;
 
 	if( this->me == NULL )
 	{
@@ -341,15 +347,6 @@ void Quadtree::printDimensions() const
 
 unsigned int Quadtree::getNumberOfNodes() const
 { //{{{
-	if( this->me == NULL )
-		return 0;
-
-	if( !this->parent )
-		return 1;
-
-	return this->mChildren[ 0 ]->getNumberOfNodes() +
-		this->mChildren[ 1 ]->getNumberOfNodes() +
-		this->mChildren[ 2 ]->getNumberOfNodes() +
-		this->mChildren[ 3 ]->getNumberOfNodes();
+	return this->size;
 } //}}}
 

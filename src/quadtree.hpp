@@ -170,6 +170,7 @@ class Quadtree
 		bool parent;
 		Particle* me;
 		Quadtree** mChildren;
+		unsigned int size;
 
 		Quadtree( const Quadtree& rhs );
 		Quadtree &operator=( const Quadtree& rhs );
